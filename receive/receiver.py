@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 
 from hello.message import Message
+from hello.models import Dbsession
 from .content_processor import process_content
 
 
@@ -14,6 +15,13 @@ def receive(request):
 
     print('received message: ')
     print(message)
+
+    s = ''
+    for sess in Dbsession.objects.all():
+        print('looping over session: ' + str(sess))
+        s = s + '\n\t\t' + str(sess)
+
+    print('sessions: ' + s)
 
     response = process_content(message.content, message.fromNum)
 
