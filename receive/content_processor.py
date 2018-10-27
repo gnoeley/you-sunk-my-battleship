@@ -41,7 +41,7 @@ def process_content(message, sent_by):
 
 
 def remove_first_word(message, first_word):
-    remainder = message[len(first_word):]
+    remainder = message[len(first_word) + 1:]
 
     return remainder
 
@@ -73,7 +73,7 @@ def findSessionForPlayer2(player2):
         if sess.player2 == player2:
             theSession = sess
 
-    print(' Found ' + (theSession or 'no session') + ' for p2: ' + player2)
+    print(' Found ' + str(theSession or 'no session') + ' for p2: ' + player2)
     return theSession
 
 

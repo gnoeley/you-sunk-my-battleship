@@ -42,9 +42,9 @@ class Session:
         dbSession = Dbsession()
         dbSession.player1=self.player_1_num
         dbSession.player2=self.player_2_num
-        dbSession.session_state=self.session_state
-        dbSession.player_1_state=self.player_1_state
-        dbSession.player_2_state=self.player_2_state
+        dbSession.session_state=self.session_state.name
+        dbSession.player_1_state=self.player_1_state.name
+        dbSession.player_2_state=self.player_2_state.name
 
         dbSession.save()
         print("Saved dbSession")
