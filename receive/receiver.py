@@ -14,4 +14,6 @@ def receive(request):
     print('received message: ')
     print(message)
 
+
+
     return HttpResponse(message)

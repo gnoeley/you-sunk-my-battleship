@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from django.contrib import admin
 
@@ -6,8 +6,7 @@ admin.autodiscover()
 
 import hello.views
 import hello.ping.ping
-import hello.receive.receiver
-from receive import choose
+from receive import choose, receiver
 
 # To add a new path, first import the app:
 # import blog
@@ -20,7 +19,7 @@ from receive import choose
 urlpatterns = [
     path("", hello.views.index, name="index"),
     path("ping", hello.ping.ping.pong, name="pong"),
-    path("receive", hello.receive.receiver.receive, name='receive'),
+    path("receive", receiver.receive, name='receive'),
     path("choose", choose.game, name="choose"),
     path("db/", hello.views.db, name="db"),
     path("admin/", admin.site.urls),
