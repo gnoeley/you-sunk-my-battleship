@@ -15,7 +15,7 @@ $ cd python-getting-started
 $ python3 -m venv getting-started
 $ pip install -r requirements.txt
 
-$ createdb python_getting_started
+$ createdb python_getting_started (to restart run `bash wipe-db.sh` if you're special run `bash wipe-db.sh true`)
 
 $ python manage.py migrate
 $ python manage.py collectstatic
