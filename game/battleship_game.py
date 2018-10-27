@@ -50,6 +50,9 @@ class Game:
 
         self.current_player = Players.PLAYER_TWO if self.current_player is Players.PLAYER_ONE else Players.PLAYER_ONE
 
+        return self.make_turn_over_message()
+
+    def make_turn_over_message(self):
         return {
             Players.PLAYER_ONE: pretty_print_board(self.player_one_board),
             Players.PLAYER_TWO: pretty_print_board(self.player_two_board),
