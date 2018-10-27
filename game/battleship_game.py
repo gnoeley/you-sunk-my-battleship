@@ -23,22 +23,32 @@ class Game:
         self.current_player = Players.PLAYER_ONE
         self.player_one_board = create_empty_board()
         self.player_two_board = create_empty_board()
+        self.winning_player = None
 
     def place_some_ships(self):
         place_ship(self.player_one_board, CARRIER, VERTICAL, [0, 0])
         place_ship(self.player_two_board, DESTROYER, HORIZONTAL, [5, 3])
 
     def player_turn(self, player, position):
-        # if player is not self.current_player: return
+        if self.winning_player is not None:
+            return self.make_player_won_message()
 
         board = self.player_one_board if player is Players.PLAYER_ONE else self.player_two_board
         take_fire(board, position)
+        if check_is_winning_board(board):
+            self.winning_player = self.current_player
 
         self.current_player = Players.PLAYER_TWO if self.current_player is Players.PLAYER_ONE else Players.PLAYER_ONE
 
         return {
             Players.PLAYER_ONE: pretty_print_board(self.player_one_board),
             Players.PLAYER_TWO: pretty_print_board(self.player_two_board)
+        }
+
+    def make_player_won_message(self):
+        return {
+            Players.PLAYER_ONE: 'You won!' if self.winning_player is Players.PLAYER_ONE else 'You lose!',
+            Players.PLAYER_TWO: 'You won!' if self.winning_player is Players.PLAYER_TWO else 'You lose!'
         }
 
 
@@ -84,16 +94,16 @@ if __name__ == "__main__":
     game = Game()
     game.place_some_ships()
 
+    game.player_turn(Players.PLAYER_TWO, [5, 3])
+    game.player_turn(Players.PLAYER_TWO, [6, 3])
+    final_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
+
     game.player_turn(Players.PLAYER_ONE, [0, 1])
     game.player_turn(Players.PLAYER_ONE, [0, 0])
     game.player_turn(Players.PLAYER_ONE, [0, 2])
     game.player_turn(Players.PLAYER_ONE, [0, 3])
     game.player_turn(Players.PLAYER_ONE, [0, 4])
 
-    game.player_turn(Players.PLAYER_TWO, [5, 3])
-    game.player_turn(Players.PLAYER_TWO, [6, 3])
-    final_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
-
-    print(final_state[Players.PLAYER_ONE])
+    print('Player ONE: ', final_state[Players.PLAYER_ONE])
     print()
-    print(final_state[Players.PLAYER_TWO])
+    print('Player TWO: ', final_state[Players.PLAYER_TWO])
