@@ -3,6 +3,7 @@ from enum import Enum, auto
 from hello.sms.stubSmsSender import sendMessage
 from receive.content_processor import Keyword
 
+
 class SessionState(Enum):
     STARTING = auto()
     IN_GAME = auto()
@@ -72,6 +73,12 @@ class Session:
 
     def __str__(self) -> str:
         return \
-            "Message: {" + "session state:" + self.session_state + ", " + "player 1 number:" + self.player_1_num + ", " + "player 2 number:" + self.player_2_num + ", " + "player 1 state:" + self.player_1_state + ", player 2 state:" + self.player_2_state + "}"
+            "Session: {" + \
+            "session state:" + self.session_state.name + \
+            ", player 1 number:" + self.player_1_num + \
+            ", player 2 number:" + self.player_2_num + \
+            ", player 1 state:" + self.player_1_state.name + \
+            ", player 2 state:" + self.player_2_state.name + \
+            "}"
 
 
