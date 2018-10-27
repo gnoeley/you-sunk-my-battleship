@@ -8,7 +8,7 @@ class Sessions:
 
     @staticmethod
     def add_session(player_1_num, player_2_num):
-        session = Session(player_1_num, player_2_num)
+        session = Session(player_1_num=player_1_num, player_2_num=player_2_num)
 
         Sessions.sessionsDict[player_1_num] = session
         Sessions.sessionsDict[player_2_num] = session

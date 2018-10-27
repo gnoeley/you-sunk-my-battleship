@@ -2,7 +2,8 @@ from sessions import sessions, gamesession
 
 
 def invite(message, sent_by, to_num):
-    response = sessions.Sessions.add_session(sent_by, to_num)
+    session = sessions.Sessions.add_session(sent_by, to_num)
+    response = session.invite_player_2()
 
     print(response)
 

@@ -1,3 +1,4 @@
+from hello.models import Dbsession
 from .actions import invite, accept, reject, quit
 from sessions import sessions, gamesession
 from .keywords import Keyword
@@ -14,16 +15,18 @@ def process_content(message, sent_by):
     first_word = message.split(' ')[0]
     remainder = remove_first_word(message, first_word)
 
-    session: gamesession.Session = sessions.Sessions.get_session(sent_by)
-
+    dbSession = findSession(sent_by, sent_by)
+    
     if first_word == Keyword.INVITE.value:
-        if session is None:
+        if dbSession is None:
             return invite(remainder, sent_by, "")
         else:
             return 'invite already in a session'  # TODO: stuff and things
 
-    if session is None:
-        return 'no session found' + str(sessions.Sessions.sessionsDict) + " for " + sent_by  # TODO: stuff and things
+    if dbSession is None:
+        return 'no session found' +  str(len(Dbsession.objects.all())) + " ---- " + str(Dbsession.objects.all())
+
+    session = gamesession.Session(dbSession=dbSession)
 
     if Keyword.has_value(first_word):
 
@@ -41,3 +44,22 @@ def remove_first_word(message, first_word):
     remainder = message[len(first_word):]
 
     return remainder
+
+
+def findSession(player1, player2):
+    theSession = findSessionForPlayer1(player1)
+    if theSession is None:
+        theSession = findSessionForPlayer2(player2)
+    return theSession
+
+def findSessionForPlayer1(player1):
+    try:
+        return Dbsession.objects.get(player1=player1)
+    except Dbsession.DoesNotExist:
+        return None
+
+def findSessionForPlayer2(player2):
+    try:
+        return Dbsession.objects.get(player2=player2)
+    except Dbsession.DoesNotExist:
+        return None
