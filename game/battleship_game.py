@@ -67,12 +67,37 @@ def pretty_print_board(board):
 
 
 def place_ship(board, ship, orientation, position):
+    if not is_valid_placement(board, ship, orientation, position):
+        return False
+
     initial_x, initial_y = position
 
     for i in range(ship):
         x = initial_x + i if orientation is HORIZONTAL else initial_x
         y = initial_y + i if orientation is VERTICAL else initial_y
         board[y][x] = 's'
+
+    return True
+
+
+def is_valid_placement(board, ship, orientation, position):
+    def is_out_of_bounds(value):
+        return not -1 < value < 9
+
+    initial_x, initial_y = position
+    max_x = initial_x + ship if orientation is HORIZONTAL else initial_x
+    max_y = initial_y + ship if orientation is VERTICAL else initial_y
+
+    if is_out_of_bounds(initial_x) or is_out_of_bounds(initial_y) or is_out_of_bounds(max_x) or is_out_of_bounds(max_y):
+        return False
+
+    for i in range(ship):
+        x = initial_x + i if orientation is HORIZONTAL else initial_x
+        y = initial_y + i if orientation is VERTICAL else initial_y
+        if board[y][x] is 's':
+            return False
+
+    return True
 
 
 def take_fire(board, position):
@@ -108,4 +133,3 @@ if __name__ == "__main__":
     game.player_turn(Players.PLAYER_ONE, [0, 2])
     game.player_turn(Players.PLAYER_ONE, [0, 3])
     game.player_turn(Players.PLAYER_ONE, [0, 4])
-
