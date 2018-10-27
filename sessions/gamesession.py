@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from hello.sms.stubSmsSender import sendMessage
+from hello.sms.smsSender import sendMessage
 from receive.keywords import Keyword
 
 
