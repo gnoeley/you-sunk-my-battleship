@@ -1,4 +1,5 @@
 from enum import Enum
+import random
 
 # Ships
 CARRIER = 5
@@ -26,9 +27,42 @@ class Game:
         self.winning_player = None
 
     def place_some_ships(self):
-        place_ship(self.player_one_board, CARRIER, VERTICAL, [0, 0])
-        place_ship(self.player_two_board, DESTROYER, HORIZONTAL, [5, 3])
-        place_ship(self.player_two_board, SUBMARINE, HORIZONTAL, [7, 5])
+        # place_ship(self.player_one_board, CARRIER, VERTICAL, [0, 0])
+        # place_ship(self.player_two_board, DESTROYER, HORIZONTAL, [5, 3])
+        # place_ship(self.player_two_board, SUBMARINE, HORIZONTAL, [7, 5])
+
+        while not place_ship(self.player_one_board, CARRIER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_one_board, BATTLESHIP, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_one_board, CRUISER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_one_board, SUBMARINE, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_one_board, DESTROYER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_two_board, CARRIER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_two_board, BATTLESHIP, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_two_board, CRUISER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_two_board, SUBMARINE, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+        while not place_ship(self.player_two_board, DESTROYER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
+            pass
+
+
+
 
     def player_turn(self, player, position):
         if self.winning_player is not None:
@@ -121,6 +155,7 @@ def check_is_winning_board(board):
 if __name__ == "__main__":
     game = Game()
     game.place_some_ships()
+    print(pretty_print_board(game.player_one_board))
     print(pretty_print_board(game.player_two_board))
 
     game.player_turn(Players.PLAYER_TWO, [5, 3])
