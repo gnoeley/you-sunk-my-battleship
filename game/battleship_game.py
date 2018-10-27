@@ -27,36 +27,17 @@ class Game:
         self.winning_player = None
 
     def place_some_ships(self):
-
-        while not place_ship(self.player_one_board, CARRIER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_one_board, BATTLESHIP, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_one_board, CRUISER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_one_board, SUBMARINE, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_one_board, DESTROYER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_two_board, CARRIER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_two_board, BATTLESHIP, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_two_board, CRUISER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_two_board, SUBMARINE, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
-
-        while not place_ship(self.player_two_board, DESTROYER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
-            pass
+        for player_board in [self.player_one_board, self.player_two_board]:
+            while not place_ship(player_board, CARRIER, random_orientation(), random_board_position()):
+                pass
+            while not place_ship(player_board, BATTLESHIP, random_orientation(), random_board_position()):
+                pass
+            while not place_ship(player_board, CRUISER, random_orientation(), random_board_position()):
+                pass
+            while not place_ship(player_board, SUBMARINE, random_orientation(), random_board_position()):
+                pass
+            while not place_ship(player_board, DESTROYER, random_orientation(), random_board_position()):
+                pass
 
     def player_turn(self, player, position):
         if self.winning_player is not None:
@@ -94,6 +75,14 @@ def pretty_print_board(board):
             result += position + ' '
         result += '\n'
     return result
+
+
+def random_orientation():
+    return random.randint(0, 1)
+
+
+def random_board_position():
+    return [random.randint(0, 9), random.randint(0, 9)]
 
 
 def place_ship(board, ship, orientation, position):
@@ -142,7 +131,8 @@ def take_fire(board, position):
 def check_is_winning_board(board):
     for row in board:
         for position in row:
-            if position is 's': return False
+            if position is 's':
+                return False
     return True
 
 
