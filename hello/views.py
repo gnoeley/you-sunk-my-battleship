@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .sms.stubSmsSender import sendMessage
+from .sms.smsSender import sendMessage
 
 
 from .models import Greeting

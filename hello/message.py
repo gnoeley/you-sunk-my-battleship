@@ -10,5 +10,5 @@ class Message:
 
     def __str__(self):
         return \
-            "Message: {" + "msgId:" + self.msgId + ", " + "fromNum:" + self.fromNum + ", " + "toNum:" + self.toNum + ", keyword:" + self.keyword + ", " +"content:" + self.content + "}"
+            "Message: {" + "msgId:" + (self.msgId or '') + ", " + "fromNum:" + self.fromNum + ", " + "toNum:" + self.toNum + ", keyword:" + (self.keyword or '') + ", " + "content:" + self.content + "}"
 

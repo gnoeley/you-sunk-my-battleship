@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from hello.sms.stubSmsSender import sendMessage
+from hello.sms.smsSender import sendMessage
 from receive.keywords import Keyword
 
 
@@ -98,3 +98,8 @@ class Session:
             ", player 1 state:" + self.player_1_state.name + \
             ", player 2 state:" + self.player_2_state.name + \
             "}"
+
+
+    def process_game_action(self, sent_by, first_word, remainder):
+        #  TODO: implement this
+        return 'processing game action ' + first_word + ' from ' + sent_by + ' [' + remainder + ']'
