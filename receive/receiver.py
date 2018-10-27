@@ -15,6 +15,6 @@ def receive(request):
     print('received message: ')
     print(message)
 
-    response = process_content(message.content)
+    response = process_content(message.content, message.fromNum, message.toNum)
 
     return HttpResponse(response)
