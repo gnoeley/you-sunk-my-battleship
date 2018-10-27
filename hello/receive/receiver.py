@@ -1,0 +1,15 @@
+from django.http import HttpResponse
+
+from hello.message import Message
+
+def receive(request):
+    message = Message(
+        msg_id=request.GET.get('id'),
+        from_num=request.GET.get('from'),
+        to_num=request.GET.get('to'),
+        keyword=request.GET.get('keyword'),
+        content=request.GET.get('content'))
+
+
+
+    return HttpResponse(message)
