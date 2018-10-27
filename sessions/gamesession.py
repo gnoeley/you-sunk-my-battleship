@@ -50,9 +50,22 @@ class Session:
         print("Saved dbSession")
         print("new sessions: " + str(len(Dbsession.objects.all())) + " ---- " + str(Dbsession.objects.all()))
 
+    def restart(self, playerRestarting):
+
+        if playerRestarting == self.player_2_num:
+            self.player_2_num = self.player_1_num
+            self.player_1_num = playerRestarting
+
+        self.session_state = SessionState.STARTING
+        self.player_1_state = PlayerState.STARTING
+        self.player_2_state = PlayerState.STARTING
+        self.invite_player_2()
 
     def invite_player_2(self):
         print("INVITING " + str(self.player_2_num))
+
+        self.session_state = SessionState.STARTING
+        self.player_1_state = PlayerState.STARTING
 
         p1Message = self.player_2_num + ' has been invited'
         p2Message = self.player_1_num + ' has invited you to a game of Battleships - text ' + Keyword.ACCEPT.value + ' to join the game or ' + Keyword.QUIT.value + ' to refuse'
@@ -64,6 +77,7 @@ class Session:
 
         self.save()
         return {'p1': p1Message, 'p2': p2Message}
+
 
     def player_2_accepted_invite(self):
 
@@ -129,9 +143,45 @@ class Session:
             ", player 2 state:" + self.player_2_state.name + \
             "}"
 
-
     def process_game_action(self, sent_by, first_word, remainder):
         #  TODO: implement this
         return 'processing game action ' + first_word + ' from ' + sent_by + ' [' + remainder + ']'
 
+    @staticmethod
+    def findSession(p):
 
+        print('Finding session for: ' + p + Session.sessions_str())
+
+        theSession = Session.findSessionForPlayer1(p)
+        if theSession is None:
+            theSession = Session.findSessionForPlayer2(p)
+        return theSession
+
+    @staticmethod
+    def findSessionForPlayer1(p):
+        theSession = None
+        for sess in Dbsession.objects.all():
+            if sess.player1 == p:
+                theSession = sess
+
+        print(' Found ' + str(theSession or 'no session') + ' for p1: ' + p)
+        return theSession
+
+    @staticmethod
+    def findSessionForPlayer2(p):
+
+        theSession = None
+        for sess in Dbsession.objects.all():
+            print('iterating over sessions to find player2: "' + p + '" +  session.player2="' + sess.player2 + '", p2 equal? ' + str(sess.player2 == p))
+            if sess.player2 == p:
+                theSession = sess
+
+        print(' Found ' + str(theSession or 'no session') + ' for p2: ' + p)
+        return theSession
+
+    @staticmethod
+    def sessions_str() -> str:
+        s = ''
+        for sess in Dbsession.objects.all():
+            s = s + '\n\t\t' + str(sess)
+        return ' Sessions: ' + str(len(Dbsession.objects.all())) + " ---- " + s
