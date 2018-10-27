@@ -1,7 +1,8 @@
 from enum import Enum
 
-from .actions import invite, accept
+from .actions import invite, accept, reject, quit
 from sessions import sessions
+
 
 class Keyword(Enum):
     INVITE = 'INVITE'
@@ -9,8 +10,11 @@ class Keyword(Enum):
     REJECT = 'REJECT'
     QUIT = 'QUIT'
 
+
 actions = {
-    Keyword.ACCEPT: accept
+    Keyword.ACCEPT: accept,
+    Keyword.REJECT: reject,
+    Keyword.QUIT: quit
 }
 
 
@@ -25,7 +29,8 @@ def process_content(message, sent_by, to_num):
     if session is None:
         return invite(remainder, sent_by, to_num)
 
-    return actions[keyword](remainder, session)
+    return actions[keyword](remainder, session, sent_by)
+
 
 def remove_first_word(message, first_word):
     remainder = message[len(first_word):]
