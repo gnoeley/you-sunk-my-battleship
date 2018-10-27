@@ -10,7 +10,7 @@ actions = {
 }
 
 
-def process_content(message, sent_by, to_num):
+def process_content(message, sent_by):
     first_word = message.split(' ')[0]
     remainder = remove_first_word(message, first_word)
 
@@ -18,7 +18,7 @@ def process_content(message, sent_by, to_num):
 
     if first_word == Keyword.INVITE.value:
         if session is None:
-            return invite(remainder, sent_by, to_num)
+            return invite(remainder, sent_by)
         else:
             return 'invite already in a session'  # TODO: stuff and things
 

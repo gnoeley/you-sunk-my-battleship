@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from hello.message import Message
 from .content_processor import process_content
 
+
 def receive(request):
     message = Message(
         msg_id=request.GET.get('id'),
@@ -11,10 +12,9 @@ def receive(request):
         keyword=request.GET.get('keyword'),
         content=request.GET.get('content'))
 
-
     print('received message: ')
     print(message)
 
-    response = process_content(message.content, message.fromNum, message.toNum)
+    response = process_content(message.content, message.fromNum)
 
     return HttpResponse(response)
