@@ -144,14 +144,6 @@ if __name__ == "__main__":
     game.player_turn(Players.PLAYER_TWO, [6, 3])
     final_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
 
+    print('Player ONE: ', final_state[Players.PLAYER_ONE])
+    print('Player TWO: ', final_state[Players.PLAYER_TWO])
     print("Game Over?", final_state['GAME_OVER'])
-    print('Player ONE:')
-    print(final_state[Players.PLAYER_ONE])
-    print('Player TWO:')
-    print(final_state[Players.PLAYER_TWO])
-
-    game.player_turn(Players.PLAYER_ONE, [0, 1])
-    game.player_turn(Players.PLAYER_ONE, [0, 0])
-    game.player_turn(Players.PLAYER_ONE, [0, 2])
-    game.player_turn(Players.PLAYER_ONE, [0, 3])
-    game.player_turn(Players.PLAYER_ONE, [0, 4])

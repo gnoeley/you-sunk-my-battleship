@@ -43,7 +43,10 @@ other_player_hit_destroyer = [
 current_player_hit = [
     'BOOM! You got one',
     'Spot on!',
-    'Bang! That sound of people screaming is because you did a good job'
+    'Bang! That sound of people screaming is because you did a good job',
+    'All those years in the simulator have finally paid off. Direct hit.',
+    'Achievement unlocked - widow maker! How does it feel?',
+    'Well done.'
 ]
 
 
@@ -61,7 +64,7 @@ def make_message(player, current_player, winning_player, ship_hit):
         if ship_hit is None:
             return other_player_miss[random.randint(0, 5)]
         else:
-            return other_player_hit_carrier[random.randint(0, 5)]
+            return other_player_hit_carrier[random.randint(0, 4)]
 
 
 def make_player_won_message(player, winning_player):
