@@ -19,12 +19,17 @@ def prettyPrintBoard(board):
         print()
 
 def placeShip(board, ship, orientaion, position):
-    x = position[0]
-    y = position[1]
+    initial_x = position[0]
+    initial_y = position[1]
 
-    if orientaion is VERTICAL:
-        for i in range(ship):
-            board[y+i][x] = 's'
-    else:
-        for i in range(ship):
-            board[y][x+i] = 's'
+    for i in range(ship):
+        x = initial_x + i if orientaion is HORIZONTAL else initial_x
+        y = initial_y + i if orientaion is VERTICAL else initial_y
+        board[y][x] = 's'
+
+if __name__ == "__main__":
+    board = createEmptyBoard()
+    placeShip(board, CARRIER, VERTICAL, [0,0])
+    placeShip(board, DESTROYER, HORIZONTAL, [5,3])
+    prettyPrintBoard(board)
+
