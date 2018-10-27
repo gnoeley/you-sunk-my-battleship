@@ -18,12 +18,21 @@ class Ship:
         self.character = character
 
 
-# Ships
-CARRIER = Ship(5, 'CA')
-BATTLESHIP = Ship(4, 'B')
-CRUISER = Ship(3, 'CR')
-SUBMARINE = Ship(3, 'S')
-DESTROYER = Ship(2, 'D')
+class Ships(Enum):
+    CARRIER = 1,
+    BATTLESHIP = 2,
+    CRUISER = 3,
+    SUBMARINE = 4,
+    DESTROYER = 5
+
+
+available_ships = {
+    Ships.CARRIER: Ship(5, 'CA'),
+    Ships.BATTLESHIP: Ship(4, 'B'),
+    Ships.CRUISER: Ship(3, 'CR'),
+    Ships.SUBMARINE: Ship(3, 'S'),
+    Ships.DESTROYER: Ship(2, 'D')
+}
 
 
 class Game:
@@ -36,15 +45,15 @@ class Game:
 
     def place_some_ships(self):
         for player_board in [self.player_one_board, self.player_two_board]:
-            while not place_ship(player_board, CARRIER, random_orientation(), random_board_position()):
+            while not place_ship(player_board, available_ships[Ships.CARRIER], random_orientation(), random_board_position()):
                 pass
-            while not place_ship(player_board, BATTLESHIP, random_orientation(), random_board_position()):
+            while not place_ship(player_board, available_ships[Ships.BATTLESHIP], random_orientation(), random_board_position()):
                 pass
-            while not place_ship(player_board, CRUISER, random_orientation(), random_board_position()):
+            while not place_ship(player_board, available_ships[Ships.CRUISER], random_orientation(), random_board_position()):
                 pass
-            while not place_ship(player_board, SUBMARINE, random_orientation(), random_board_position()):
+            while not place_ship(player_board, available_ships[Ships.SUBMARINE], random_orientation(), random_board_position()):
                 pass
-            while not place_ship(player_board, DESTROYER, random_orientation(), random_board_position()):
+            while not place_ship(player_board, available_ships[Ships.DESTROYER], random_orientation(), random_board_position()):
                 pass
 
     def player_turn(self, player, position):
@@ -52,19 +61,19 @@ class Game:
             return self.make_message()
 
         board = self.player_one_board if player is Players.PLAYER_ONE else self.player_two_board
-        is_hit = take_fire(board, position)
+        type_of_ship_hit: Ships = take_fire(board, position)
         if check_is_winning_board(board):
             self.winning_player = self.current_player
 
-        message = self.make_message(is_hit)
+        message = self.make_message(type_of_ship_hit)
         self.current_player = Players.PLAYER_TWO if self.current_player is Players.PLAYER_ONE else Players.PLAYER_ONE
 
         return message
 
-    def make_message(self, is_hit):
+    def make_message(self, type_of_ship_hit):
         return {
-            Players.PLAYER_ONE: messages.make_message(Players.PLAYER_ONE, self.current_player, self.winning_player, is_hit),
-            Players.PLAYER_TWO: messages.make_message(Players.PLAYER_TWO, self.current_player, self.winning_player, is_hit),
+            Players.PLAYER_ONE: messages.make_message(Players.PLAYER_ONE, self.current_player, self.winning_player, type_of_ship_hit),
+            Players.PLAYER_TWO: messages.make_message(Players.PLAYER_TWO, self.current_player, self.winning_player, type_of_ship_hit),
             'GAME_OVER': self.winning_player is not None
         }
 
@@ -116,23 +125,22 @@ def is_valid_placement(board, ship, orientation, position):
 
 
 def is_ship_position(position):
-    return position is CRUISER.character \
-           or position is BATTLESHIP.character \
-           or position is CARRIER.character \
-           or position is SUBMARINE.character \
-           or position is DESTROYER.character
+    for type_of_ship, ship in available_ships.items():
+        if position is ship.character:
+            return type_of_ship
+    return None
 
 
 def take_fire(board, position):
     x, y = position
 
-    if is_ship_position(board[y][x]):
+    type_of_ship_hit = is_ship_position(board[y][x])
+    if type_of_ship_hit:
         board[y][x] = 'h'
-        return True
     elif board[y][x] is 'e':
         board[y][x] = 'm'
 
-    return False
+    return type_of_ship_hit
 
 
 def check_is_winning_board(board):
