@@ -1,3 +1,5 @@
+import random
+
 current_player_miss = [
     'Try again loser',
     'Small children have better aim',
@@ -44,7 +46,24 @@ current_player_hit = [
     'Bang! That sound of people screaming is because you did a good job'
 ]
 
-progress_messages = [
-    'Your fleet is heavily damaged',
-    'It\'s not over yet'
-]
+
+def make_message(player, current_player, winning_player, ship_hit):
+    if winning_player is not None:
+        return make_player_won_message(player, winning_player)
+
+    current_player_turn = player is current_player
+    if current_player_turn:
+        if ship_hit is None:
+            return current_player_miss[random.randint(0, 5)]
+        else:
+            return current_player_hit[random.randint(0, 5)]
+    else:
+        if ship_hit is None:
+            return other_player_miss[random.randint(0, 5)]
+        else:
+            return other_player_hit_carrier[random.randint(0, 5)]
+
+
+def make_player_won_message(player, winning_player):
+    return 'You won!' if winning_player is player else 'You lose!'
+

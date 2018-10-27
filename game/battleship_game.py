@@ -1,3 +1,4 @@
+from game import messages
 from enum import Enum
 import random
 
@@ -41,43 +42,28 @@ class Game:
 
     def player_turn(self, player, position):
         if self.winning_player is not None:
-            return self.make_player_won_message()
+            return self.make_message()
 
         board = self.player_one_board if player is Players.PLAYER_ONE else self.player_two_board
         take_fire(board, position)
         if check_is_winning_board(board):
             self.winning_player = self.current_player
 
+        message = self.make_message()
         self.current_player = Players.PLAYER_TWO if self.current_player is Players.PLAYER_ONE else Players.PLAYER_ONE
 
-        return self.make_turn_over_message()
+        return message
 
-    def make_turn_over_message(self):
+    def make_message(self):
         return {
-            Players.PLAYER_ONE: pretty_print_board(self.player_one_board),
-            Players.PLAYER_TWO: pretty_print_board(self.player_two_board),
-            'GAME_OVER': self.winning_player is not None
-        }
-
-    def make_player_won_message(self):
-        return {
-            Players.PLAYER_ONE: 'You won!' if self.winning_player is Players.PLAYER_ONE else 'You lose!',
-            Players.PLAYER_TWO: 'You won!' if self.winning_player is Players.PLAYER_TWO else 'You lose!',
+            Players.PLAYER_ONE: messages.make_message(Players.PLAYER_ONE, self.current_player, self.winning_player, True),
+            Players.PLAYER_TWO: messages.make_message(Players.PLAYER_TWO, self.current_player, self.winning_player, True),
             'GAME_OVER': self.winning_player is not None
         }
 
 
 def create_empty_board():
     return [['e' for i in range(10)] for i in range(10)]
-
-
-def pretty_print_board(board):
-    result = ''
-    for row in board:
-        for position in row:
-            result += position + ' '
-        result += '\n'
-    return result
 
 
 def random_orientation():
@@ -137,6 +123,15 @@ def check_is_winning_board(board):
             if position is 's':
                 return False
     return True
+
+
+def pretty_print_board(board):
+    result = ''
+    for row in board:
+        for position in row:
+            result += position + ' '
+        result += '\n'
+    return result
 
 
 if __name__ == "__main__":
