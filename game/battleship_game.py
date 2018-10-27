@@ -27,9 +27,6 @@ class Game:
         self.winning_player = None
 
     def place_some_ships(self):
-        # place_ship(self.player_one_board, CARRIER, VERTICAL, [0, 0])
-        # place_ship(self.player_two_board, DESTROYER, HORIZONTAL, [5, 3])
-        # place_ship(self.player_two_board, SUBMARINE, HORIZONTAL, [7, 5])
 
         while not place_ship(self.player_one_board, CARRIER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
             pass
@@ -60,9 +57,6 @@ class Game:
 
         while not place_ship(self.player_two_board, DESTROYER, random.randint(0, 1), [random.randint(0, 9), random.randint(0, 9)]):
             pass
-
-
-
 
     def player_turn(self, player, position):
         if self.winning_player is not None:
