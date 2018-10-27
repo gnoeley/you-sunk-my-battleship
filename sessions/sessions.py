@@ -17,4 +17,4 @@ class Sessions:
 
     @staticmethod
     def get_session(player_num):
-        return Sessions.sessionsDict[player_num]
+        return Sessions.sessionsDict.get(player_num)

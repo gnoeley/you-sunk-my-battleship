@@ -2,7 +2,6 @@ from enum import Enum, auto
 
 from hello.sms.stubSmsSender import sendMessage
 
-
 class SessionState(Enum):
     STARTING = auto()
     IN_GAME = auto()
@@ -62,3 +61,9 @@ class Session:
 
         self.player_2_state = PlayerState.QUIT
         self.session_state = SessionState.ENDED
+
+    def __str__(self) -> str:
+        return \
+            "Message: {" + "session state:" + self.session_state + ", " + "player 1 number:" + self.player_1_num + ", " + "player 2 number:" + self.player_2_num + ", " + "player 1 state:" + self.player_1_state + ", player 2 state:" + self.player_2_state + "}"
+
+
