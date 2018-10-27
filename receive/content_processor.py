@@ -61,7 +61,7 @@ def findSessionForPlayer1(player1):
         if sess.player1 == player1:
             theSession = sess
 
-    print(' Found ' + (theSession or 'no session') + ' for p1: ' + player1)
+    print(' Found ' + str(theSession or 'no session') + ' for p1: ' + player1)
     return theSession
 
 
