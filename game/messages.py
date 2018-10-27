@@ -1,4 +1,5 @@
 from .battleship_game import Ships
+from .battleship_game import Players
 import random
 
 current_player_miss = [
@@ -7,6 +8,16 @@ current_player_miss = [
     'You hit one! If hit one is slang for not even close',
     'Missed, maybe try your hand at world peace instead of war'
 ]
+
+current_player_hit = [
+    'BOOM! You got one',
+    'Spot on!',
+    'Bang! That sound of people screaming is because you did a good job',
+    'All those years in the simulator have finally paid off. Direct hit.',
+    'Achievement unlocked - widow maker! How does it feel?',
+    'Well done.'
+]
+
 other_player_miss = [
     'All your ships are still safe',
     'No damage this time',
@@ -43,14 +54,23 @@ other_player = {
     ]
 }
 
-current_player_hit = [
-    'BOOM! You got one',
-    'Spot on!',
-    'Bang! That sound of people screaming is because you did a good job',
-    'All those years in the simulator have finally paid off. Direct hit.',
-    'Achievement unlocked - widow maker! How does it feel?',
-    'Well done.'
-]
+
+hits_taken = {
+    Players.PLAYER_ONE.name: {
+        Ships.CARRIER.name: 0,
+        Ships.BATTLESHIP.name: 0,
+        Ships.CRUISER.name: 0,
+        Ships.SUBMARINE.name: 0,
+        Ships.DESTROYER.name: 0
+    },
+    Players.PLAYER_TWO.name: {
+        Ships.CARRIER.name: 0,
+        Ships.BATTLESHIP.name: 0,
+        Ships.CRUISER.name: 0,
+        Ships.SUBMARINE.name: 0,
+        Ships.DESTROYER.name: 0
+    }
+}
 
 
 def make_message(player, current_player, winning_player, type_of_ship_hit):
@@ -60,14 +80,17 @@ def make_message(player, current_player, winning_player, type_of_ship_hit):
     current_player_turn = player is current_player
     if current_player_turn:
         if type_of_ship_hit:
-            return current_player_hit[random.randint(0, 1)]
+            return current_player_hit[random.randint(0, 5)]
         else:
-            return current_player_miss[random.randint(0, 1)]
+            return current_player_miss[random.randint(0, 2)]
     else:
         if type_of_ship_hit:
-            return other_player[type_of_ship_hit.name][random.randint(0, 1)]
+            type_of_ship_name = type_of_ship_hit.name
+            message = other_player[type_of_ship_name][hits_taken[player.name][type_of_ship_name]]
+            hits_taken[player.name][type_of_ship_name] += 1
+            return message
         else:
-            return other_player_miss[random.randint(0, 1)]
+            return other_player_miss[random.randint(0, 2)]
 
 
 def make_player_won_message(player, winning_player):
