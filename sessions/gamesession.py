@@ -22,7 +22,7 @@ class PlayerState(Enum):
 
 class Session:
 
-    def __init__(self, player_1_num='a', player_2_num='b', dbSession = None) -> object:
+    def __init__(self, player_1_num='a', player_2_num='b', dbSession: Dbsession = None) -> object:
         if dbSession is None:
             self.player_1_num = player_1_num
             self.player_2_num = player_2_num
@@ -133,3 +133,5 @@ class Session:
     def process_game_action(self, sent_by, first_word, remainder):
         #  TODO: implement this
         return 'processing game action ' + first_word + ' from ' + sent_by + ' [' + remainder + ']'
+
+
