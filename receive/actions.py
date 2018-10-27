@@ -2,29 +2,25 @@ from sessions import sessions, gamesession
 
 
 def invite(message, sent_by, to_num):
-    response = 'You\'re inviting ' + message
+    response = sessions.Sessions.add_session(sent_by, to_num)
 
     print(response)
-
-    sessions.Sessions.add_session(sent_by, to_num)
 
     return response
 
 
 def accept(message, session: gamesession.Session, sent_by):
-    response = 'You\'ve accepted an invitation'
+    response = session.player_2_accepted_invite()
 
     print(response, message, session)
-
-    session.player_2_accepted_invite()
 
     return response
 
 
 def reject(message, session: gamesession.Session, sent_by):
-    response = 'Player 2 rejected the invite ' + message
+    response = session.player_2_rejected_invite()
 
-    session.player_2_rejected_invite()
+    print(response)
 
     return response
 
@@ -38,5 +34,7 @@ def quit(message, session: gamesession.Session, sent_by):
     else:
         session.player_2_quit()
         response = 'Player 2 has quit ' + message
+
+    print(response)
 
     return response
