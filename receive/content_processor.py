@@ -13,13 +13,13 @@ actions = {
 }
 
 
-def process_content(message):
+def process_content(message, sent_by):
     first_word = message.split(' ')[0]
     keyword = Keyword[first_word]
 
     remainder = remove_first_word(message, first_word)
 
-    return actions[keyword](remainder)
+    return actions[keyword](remainder, sent_by)
 
 def remove_first_word(message, first_word):
     remainder = message[len(first_word):]
