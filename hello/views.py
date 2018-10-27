@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .sms.smsSender import sendMessage
+from .sms.stubSmsSender import sendMessage
+
+
 from .models import Greeting
 
 import os
@@ -9,7 +11,7 @@ import os
 def index(request):
     configVal = os.environ.get('A_CONFIG_VAR')
 
-    # sendMessage('447484292181', 'This is a test message.')
+    sendMessage('447484292181', 'This is a test message.')
 
     return HttpResponse('Hello from Python! =>' + configVal)
     # return render(request, "index.html")
