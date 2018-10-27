@@ -140,10 +140,18 @@ if __name__ == "__main__":
     print(pretty_print_board(game.player_one_board))
     print(pretty_print_board(game.player_two_board))
 
-    game.player_turn(Players.PLAYER_TWO, [5, 3])
-    game.player_turn(Players.PLAYER_TWO, [6, 3])
-    final_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
+    game_state = game.player_turn(Players.PLAYER_TWO, [5, 3])
+    print('Player ONE: ', game_state[Players.PLAYER_ONE])
+    print('Player TWO: ', game_state[Players.PLAYER_TWO])
+    print("Game Over?", game_state['GAME_OVER'])
 
-    print('Player ONE: ', final_state[Players.PLAYER_ONE])
-    print('Player TWO: ', final_state[Players.PLAYER_TWO])
-    print("Game Over?", final_state['GAME_OVER'])
+    game_state = game.player_turn(Players.PLAYER_TWO, [6, 3])
+    print('Player ONE: ', game_state[Players.PLAYER_ONE])
+    print('Player TWO: ', game_state[Players.PLAYER_TWO])
+    print("Game Over?", game_state['GAME_OVER'])
+
+    game_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
+    print('Player ONE: ', game_state[Players.PLAYER_ONE])
+    print('Player TWO: ', game_state[Players.PLAYER_TWO])
+    print("Game Over?", game_state['GAME_OVER'])
+
