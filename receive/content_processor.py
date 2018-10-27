@@ -20,7 +20,7 @@ def process_content(message, sent_by):
     
     if first_word == Keyword.INVITE.value:
         if dbSession is None:
-            return invite(remainder, sent_by, "")
+            return invite(remainder, sent_by)
         else:
             session = gamesession.Session(dbSession=dbSession)
             if session.session_state == gamesession.SessionState.ENDED:

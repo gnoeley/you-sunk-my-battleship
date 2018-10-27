@@ -24,12 +24,14 @@ class Session:
 
     def __init__(self, player_1_num='a', player_2_num='b', dbSession: Dbsession = None) -> object:
         if dbSession is None:
+            self.id = None
             self.player_1_num = player_1_num
             self.player_2_num = player_2_num
             self.session_state = SessionState.STARTING
             self.player_1_state = PlayerState.STARTING
             self.player_2_state = PlayerState.NOT_JOINED
         else:
+            self.id = dbSession.id
             self.player_1_num = dbSession.player1
             self.player_2_num = dbSession.player2
             self.session_state = SessionState[dbSession.session_state]
@@ -39,7 +41,15 @@ class Session:
 
     def save(self):
         print("SAVING")
-        dbSession = Dbsession()
+
+        dbSession = None
+        theId = self.id
+
+        if theId is None:
+            dbSession = Dbsession()
+        else:
+            dbSession = Dbsession.objects.get(id=theId)
+
         dbSession.player1=self.player_1_num
         dbSession.player2=self.player_2_num
         dbSession.session_state=self.session_state.name
@@ -47,6 +57,10 @@ class Session:
         dbSession.player_2_state=self.player_2_state.name
 
         dbSession.save()
+
+
+        self.id = dbSession.id  # Not sure if this works ... shrugs
+
         print("Saved dbSession")
         print("new sessions: " + str(len(Dbsession.objects.all())) + " ---- " + str(Dbsession.objects.all()))
 
