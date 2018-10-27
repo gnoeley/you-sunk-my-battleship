@@ -18,12 +18,12 @@ def process_content(message, sent_by):
 
     if first_word == Keyword.INVITE.value:
         if session is None:
-            return invite(remainder, sent_by)
+            return invite(remainder, sent_by, "")
         else:
             return 'invite already in a session'  # TODO: stuff and things
 
     if session is None:
-        return 'no session found' + sessions.Sessions.sessionsDict.str()  # TODO: stuff and things
+        return 'no session found' + str(sessions.Sessions.sessionsDict) + " for " + sent_by  # TODO: stuff and things
 
     if Keyword.has_value(first_word):
 

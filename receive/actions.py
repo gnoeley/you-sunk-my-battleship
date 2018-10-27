@@ -6,7 +6,6 @@ def invite(message, sent_by, to_num):
 
     print(response)
 
-    sessions.Sessions.add_session(sent_by, message)
     return response
 
 
