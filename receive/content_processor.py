@@ -24,7 +24,7 @@ def process_content(message, sent_by):
             return 'invite already in a session'  # TODO: stuff and things
 
     if dbSession is None:
-        return 'no session found'
+        return 'no session found' +  str(len(Dbsession.objects.all())) + " ---- " + str(Dbsession.objects.all())
 
     session = gamesession.Session(dbSession=dbSession)
 

@@ -22,7 +22,7 @@ class PlayerState(Enum):
 
 class Session:
 
-    def __init__(self, player_1_num, player_2_num, dbSession: Dbsession) -> None:
+    def __init__(self, player_1_num='a', player_2_num='b', dbSession = None) -> object:
         if dbSession is None:
             self.player_1_num = player_1_num
             self.player_2_num = player_2_num
@@ -38,8 +38,8 @@ class Session:
             self.save()
 
     def save(self):
+        print("SAVING")
         dbSession = Dbsession()
-        dbSession.id=self.player_1_num + "##" + self.player_2_num
         dbSession.player1=self.player_1_num
         dbSession.player2=self.player_2_num
         dbSession.session_state=self.session_state
@@ -47,8 +47,13 @@ class Session:
         dbSession.player_2_state=self.player_2_state
 
         dbSession.save()
+        print("Saved dbSession")
+        print("new sessions: " + str(len(Dbsession.objects.all())) + " ---- " + str(Dbsession.objects.all()))
+
 
     def invite_player_2(self):
+        print("INVITING " + str(self.player_2_num))
+
         p1Message = self.player_2_num + ' has been invited'
         p2Message = self.player_1_num + ' has invited you to a game of Battleships - text ' + Keyword.ACCEPT.value + ' to join the game or ' + Keyword.QUIT.value + ' to refuse'
 

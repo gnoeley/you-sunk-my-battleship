@@ -14,4 +14,14 @@ class Dbsession(models.Model):
     player_1_state = models.CharField(max_length=100)
     player_2_state = models.CharField(max_length=100)
 
+    def __str__(self) -> str:
+        return \
+            "Session: {" + \
+            "session state:" + self.session_state + \
+            ", player 1 :" + self.player1 + \
+            ", player 2 :" + self.player2 + \
+            ", player 1 state:" + self.player_1_state + \
+            ", player 2 state:" + self.player_2_state + \
+            "}"
+
 
