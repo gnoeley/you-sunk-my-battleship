@@ -16,7 +16,7 @@ other_player_hit_carrier = [
     'Your carrier is hit! Minimal damage sustained',
     'Your carrier is hit again! Distress signal launched!'
     'A third hit on your carrier, start preparing life boats',
-    'Forth hit on carrier! Start sending messages to loved ones',
+    'Fourth hit on carrier! Start sending messages to loved ones',
     'Your carrier is sunk, 16 of your finest men have died'
 ]
 other_player_hit_battleship = [
