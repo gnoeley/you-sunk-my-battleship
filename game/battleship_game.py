@@ -22,8 +22,7 @@ def pretty_print_board(board):
 
 
 def place_ship(board, ship, orientation, position):
-    initial_x = position[0]
-    initial_y = position[1]
+    initial_x, initial_y = position
 
     for i in range(ship):
         x = initial_x + i if orientation is HORIZONTAL else initial_x
@@ -32,8 +31,7 @@ def place_ship(board, ship, orientation, position):
 
 
 def take_fire(board, position):
-    x = position[0]
-    y = position[1]
+    x, y = position
 
     if board[y][x] is 's':
         board[y][x] = 'h'
