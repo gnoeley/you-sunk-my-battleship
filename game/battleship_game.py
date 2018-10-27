@@ -27,9 +27,21 @@ def placeShip(board, ship, orientaion, position):
         y = initial_y + i if orientaion is VERTICAL else initial_y
         board[y][x] = 's'
 
+def takeFire(board, position):
+    x = position[0]
+    y = position[1]
+
+    if board[y][x] is 's':
+        board[y][x] = 'h'
+    elif board[y][x] is 'e':
+        board[y][x] = 'm'
+
 if __name__ == "__main__":
     board = createEmptyBoard()
-    placeShip(board, CARRIER, VERTICAL, [0,0])
-    placeShip(board, DESTROYER, HORIZONTAL, [5,3])
+    placeShip(board, CARRIER, VERTICAL, [0, 0])
+    placeShip(board, DESTROYER, HORIZONTAL, [5, 3])
     prettyPrintBoard(board)
-
+    takeFire(board, [0, 1])
+    takeFire(board, [9, 9])
+    print()
+    prettyPrintBoard(board)
