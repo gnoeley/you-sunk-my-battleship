@@ -45,19 +45,19 @@ class Game:
             return self.make_message()
 
         board = self.player_one_board if player is Players.PLAYER_ONE else self.player_two_board
-        take_fire(board, position)
+        is_hit = take_fire(board, position)
         if check_is_winning_board(board):
             self.winning_player = self.current_player
 
-        message = self.make_message()
+        message = self.make_message(is_hit)
         self.current_player = Players.PLAYER_TWO if self.current_player is Players.PLAYER_ONE else Players.PLAYER_ONE
 
         return message
 
-    def make_message(self):
+    def make_message(self, is_hit):
         return {
-            Players.PLAYER_ONE: messages.make_message(Players.PLAYER_ONE, self.current_player, self.winning_player, True),
-            Players.PLAYER_TWO: messages.make_message(Players.PLAYER_TWO, self.current_player, self.winning_player, True),
+            Players.PLAYER_ONE: messages.make_message(Players.PLAYER_ONE, self.current_player, self.winning_player, is_hit),
+            Players.PLAYER_TWO: messages.make_message(Players.PLAYER_TWO, self.current_player, self.winning_player, is_hit),
             'GAME_OVER': self.winning_player is not None
         }
 
@@ -113,8 +113,11 @@ def take_fire(board, position):
 
     if board[y][x] is 's':
         board[y][x] = 'h'
+        return True
     elif board[y][x] is 'e':
         board[y][x] = 'm'
+
+    return False
 
 
 def check_is_winning_board(board):
@@ -140,7 +143,7 @@ if __name__ == "__main__":
     print(pretty_print_board(game.player_one_board))
     print(pretty_print_board(game.player_two_board))
 
-    game_state = game.player_turn(Players.PLAYER_TWO, [5, 3])
+    game_state = game.player_turn(Players.PLAYER_ONE, [5, 3])
     print('Player ONE: ', game_state[Players.PLAYER_ONE])
     print('Player TWO: ', game_state[Players.PLAYER_TWO])
     print("Game Over?", game_state['GAME_OVER'])
@@ -150,7 +153,7 @@ if __name__ == "__main__":
     print('Player TWO: ', game_state[Players.PLAYER_TWO])
     print("Game Over?", game_state['GAME_OVER'])
 
-    game_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
+    game_state = game.player_turn(Players.PLAYER_ONE, [9, 9])
     print('Player ONE: ', game_state[Players.PLAYER_ONE])
     print('Player TWO: ', game_state[Players.PLAYER_TWO])
     print("Game Over?", game_state['GAME_OVER'])
