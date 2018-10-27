@@ -39,6 +39,13 @@ def take_fire(board, position):
         board[y][x] = 'm'
 
 
+def check_is_winning_board(board):
+    for row in board:
+        for position in row:
+            if position is 's': return False
+    return True
+
+
 if __name__ == "__main__":
     game_board = create_empty_board()
     place_ship(game_board, CARRIER, VERTICAL, [0, 0])
@@ -48,3 +55,13 @@ if __name__ == "__main__":
     take_fire(game_board, [9, 9])
     print()
     pretty_print_board(game_board)
+    print(check_is_winning_board(game_board))
+    take_fire(game_board, [0, 0])
+    take_fire(game_board, [0, 2])
+    take_fire(game_board, [0, 3])
+    take_fire(game_board, [0, 4])
+    take_fire(game_board, [5, 3])
+    take_fire(game_board, [6, 3])
+    print()
+    pretty_print_board(game_board)
+    print(check_is_winning_board(game_board))
