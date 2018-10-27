@@ -28,6 +28,7 @@ class Game:
     def place_some_ships(self):
         place_ship(self.player_one_board, CARRIER, VERTICAL, [0, 0])
         place_ship(self.player_two_board, DESTROYER, HORIZONTAL, [5, 3])
+        place_ship(self.player_two_board, SUBMARINE, HORIZONTAL, [7, 5])
 
     def player_turn(self, player, position):
         if self.winning_player is not None:
@@ -42,7 +43,8 @@ class Game:
 
         return {
             Players.PLAYER_ONE: pretty_print_board(self.player_one_board),
-            Players.PLAYER_TWO: pretty_print_board(self.player_two_board)
+            Players.PLAYER_TWO: pretty_print_board(self.player_two_board),
+            'GAME_OVER': self.winning_player is None
         }
 
     def make_player_won_message(self):
@@ -82,11 +84,11 @@ def place_ship(board, ship, orientation, position):
 
 def is_valid_placement(board, ship, orientation, position):
     def is_out_of_bounds(value):
-        return not -1 < value < 9
+        return not -1 < value < 10
 
     initial_x, initial_y = position
-    max_x = initial_x + ship if orientation is HORIZONTAL else initial_x
-    max_y = initial_y + ship if orientation is VERTICAL else initial_y
+    max_x = initial_x + ship - 1 if orientation is HORIZONTAL else initial_x
+    max_y = initial_y + ship - 1 if orientation is VERTICAL else initial_y
 
     if is_out_of_bounds(initial_x) or is_out_of_bounds(initial_y) or is_out_of_bounds(max_x) or is_out_of_bounds(max_y):
         return False
@@ -119,14 +121,17 @@ def check_is_winning_board(board):
 if __name__ == "__main__":
     game = Game()
     game.place_some_ships()
+    print(pretty_print_board(game.player_two_board))
 
     game.player_turn(Players.PLAYER_TWO, [5, 3])
     game.player_turn(Players.PLAYER_TWO, [6, 3])
     final_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
 
-    print("Game Over? ", final_state['GAME_OVER'])
-    print('Player ONE: ', final_state[Players.PLAYER_ONE])
-    print('Player TWO: ', final_state[Players.PLAYER_TWO])
+    print("Game Over?", final_state['GAME_OVER'])
+    print('Player ONE:')
+    print(final_state[Players.PLAYER_ONE])
+    print('Player TWO:')
+    print(final_state[Players.PLAYER_TWO])
 
     game.player_turn(Players.PLAYER_ONE, [0, 1])
     game.player_turn(Players.PLAYER_ONE, [0, 0])
