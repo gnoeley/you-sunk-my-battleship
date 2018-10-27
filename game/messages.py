@@ -55,44 +55,46 @@ other_player = {
 }
 
 
-hits_taken = {
-    Players.PLAYER_ONE.name: {
-        Ships.CARRIER.name: 0,
-        Ships.BATTLESHIP.name: 0,
-        Ships.CRUISER.name: 0,
-        Ships.SUBMARINE.name: 0,
-        Ships.DESTROYER.name: 0
-    },
-    Players.PLAYER_TWO.name: {
-        Ships.CARRIER.name: 0,
-        Ships.BATTLESHIP.name: 0,
-        Ships.CRUISER.name: 0,
-        Ships.SUBMARINE.name: 0,
-        Ships.DESTROYER.name: 0
-    }
-}
+class MessageMaker:
 
+    def __init__(self):
+        self.hits_taken = {
+            Players.PLAYER_ONE.name: {
+                Ships.CARRIER.name: 0,
+                Ships.BATTLESHIP.name: 0,
+                Ships.CRUISER.name: 0,
+                Ships.SUBMARINE.name: 0,
+                Ships.DESTROYER.name: 0
+            },
+            Players.PLAYER_TWO.name: {
+                Ships.CARRIER.name: 0,
+                Ships.BATTLESHIP.name: 0,
+                Ships.CRUISER.name: 0,
+                Ships.SUBMARINE.name: 0,
+                Ships.DESTROYER.name: 0
+            }
+        }
 
-def make_message(player, current_player, winning_player, type_of_ship_hit):
-    if winning_player is not None:
-        return make_player_won_message(player, winning_player)
+    def make_message(self, player, current_player, winning_player, type_of_ship_hit):
+        if winning_player is not None:
+            return self.make_player_won_message(player, winning_player)
 
-    current_player_turn = player is current_player
-    if current_player_turn:
-        if type_of_ship_hit:
-            return current_player_hit[random.randint(0, 5)]
+        current_player_turn = player is current_player
+        if current_player_turn:
+            if type_of_ship_hit:
+                return current_player_hit[random.randint(0, 5)]
+            else:
+                return current_player_miss[random.randint(0, 2)]
         else:
-            return current_player_miss[random.randint(0, 2)]
-    else:
-        if type_of_ship_hit:
-            type_of_ship_name = type_of_ship_hit.name
-            message = other_player[type_of_ship_name][hits_taken[player.name][type_of_ship_name]]
-            hits_taken[player.name][type_of_ship_name] += 1
-            return message
-        else:
-            return other_player_miss[random.randint(0, 2)]
+            if type_of_ship_hit:
+                type_of_ship_name = type_of_ship_hit.name
+                message = other_player[type_of_ship_name][self.hits_taken[player.name][type_of_ship_name]]
+                self.hits_taken[player.name][type_of_ship_name] += 1
+                return message
+            else:
+                return other_player_miss[random.randint(0, 2)]
 
-
-def make_player_won_message(player, winning_player):
-    return 'You won!' if winning_player is player else 'You lose!'
+    @staticmethod
+    def make_player_won_message(player, winning_player):
+        return 'You won!' if winning_player is player else 'You lose!'
 

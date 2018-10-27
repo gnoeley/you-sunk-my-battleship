@@ -38,6 +38,7 @@ available_ships = {
 class Game:
 
     def __init__(self):
+        self.message_maker = messages.MessageMaker()
         self.current_player = Players.PLAYER_ONE
         self.player_one_board = create_empty_board()
         self.player_two_board = create_empty_board()
@@ -72,8 +73,14 @@ class Game:
 
     def make_message(self, type_of_ship_hit):
         return {
-            Players.PLAYER_ONE: messages.make_message(Players.PLAYER_ONE, self.current_player, self.winning_player, type_of_ship_hit),
-            Players.PLAYER_TWO: messages.make_message(Players.PLAYER_TWO, self.current_player, self.winning_player, type_of_ship_hit),
+            Players.PLAYER_ONE: self.message_maker.make_message(Players.PLAYER_ONE,
+                                                                self.current_player,
+                                                                self.winning_player,
+                                                                type_of_ship_hit),
+            Players.PLAYER_TWO: self.message_maker.make_message(Players.PLAYER_TWO,
+                                                                self.current_player,
+                                                                self.winning_player,
+                                                                type_of_ship_hit),
             'GAME_OVER': self.winning_player is not None
         }
 
