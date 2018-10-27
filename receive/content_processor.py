@@ -1,14 +1,8 @@
-from enum import Enum
-
 from .actions import invite, accept, reject, quit
 from sessions import sessions
+from .keywords import Keyword
 
 
-class Keyword(Enum):
-    INVITE = 'INVITE'
-    ACCEPT = 'ACCEPT'
-    REJECT = 'REJECT'
-    QUIT = 'QUIT'
 
 
 actions = {

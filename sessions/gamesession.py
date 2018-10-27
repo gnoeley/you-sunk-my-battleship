@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 from hello.sms.stubSmsSender import sendMessage
-from receive.content_processor import Keyword
+from receive.keywords import Keyword
 
 
 class SessionState(Enum):
