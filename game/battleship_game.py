@@ -2,13 +2,6 @@ from game import messages
 from enum import Enum
 import random
 
-# Ships
-CARRIER = 5
-BATTLESHIP = 4
-CRUISER = 3
-SUBMARINE = 3
-DESTROYER = 2
-
 # Orientation
 VERTICAL = 0
 HORIZONTAL = 1
@@ -17,6 +10,20 @@ HORIZONTAL = 1
 class Players(Enum):
     PLAYER_ONE = 1
     PLAYER_TWO = 2
+
+
+class Ship:
+    def __init__(self, size, character):
+        self.size = size
+        self.character = character
+
+
+# Ships
+CARRIER = Ship(5, 'CA')
+BATTLESHIP = Ship(4, 'B')
+CRUISER = Ship(3, 'CR')
+SUBMARINE = Ship(3, 'S')
+DESTROYER = Ship(2, 'D')
 
 
 class Game:
@@ -80,10 +87,10 @@ def place_ship(board, ship, orientation, position):
 
     initial_x, initial_y = position
 
-    for i in range(ship):
+    for i in range(ship.size):
         x = initial_x + i if orientation is HORIZONTAL else initial_x
         y = initial_y + i if orientation is VERTICAL else initial_y
-        board[y][x] = 's'
+        board[y][x] = ship.character
 
     return True
 
@@ -93,25 +100,33 @@ def is_valid_placement(board, ship, orientation, position):
         return not -1 < value < 10
 
     initial_x, initial_y = position
-    max_x = initial_x + ship - 1 if orientation is HORIZONTAL else initial_x
-    max_y = initial_y + ship - 1 if orientation is VERTICAL else initial_y
+    max_x = initial_x + ship.size - 1 if orientation is HORIZONTAL else initial_x
+    max_y = initial_y + ship.size - 1 if orientation is VERTICAL else initial_y
 
     if is_out_of_bounds(initial_x) or is_out_of_bounds(initial_y) or is_out_of_bounds(max_x) or is_out_of_bounds(max_y):
         return False
 
-    for i in range(ship):
+    for i in range(ship.size):
         x = initial_x + i if orientation is HORIZONTAL else initial_x
         y = initial_y + i if orientation is VERTICAL else initial_y
-        if board[y][x] is 's':
+        if is_ship_position(board[y][x]):
             return False
 
     return True
 
 
+def is_ship_position(position):
+    return position is CRUISER.character \
+           or position is BATTLESHIP.character \
+           or position is CARRIER.character \
+           or position is SUBMARINE.character \
+           or position is DESTROYER.character
+
+
 def take_fire(board, position):
     x, y = position
 
-    if board[y][x] is 's':
+    if is_ship_position(board[y][x]):
         board[y][x] = 'h'
         return True
     elif board[y][x] is 'e':
@@ -123,7 +138,7 @@ def take_fire(board, position):
 def check_is_winning_board(board):
     for row in board:
         for position in row:
-            if position is 's':
+            if is_ship_position(position):
                 return False
     return True
 
@@ -132,7 +147,7 @@ def pretty_print_board(board):
     result = ''
     for row in board:
         for position in row:
-            result += position + ' '
+            result += ('s' if is_ship_position(position) else position) + ' '
         result += '\n'
     return result
 
