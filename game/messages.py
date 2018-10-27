@@ -56,15 +56,15 @@ def make_message(player, current_player, winning_player, ship_hit):
 
     current_player_turn = player is current_player
     if current_player_turn:
-        if ship_hit is None:
-            return current_player_miss[random.randint(0, 5)]
+        if ship_hit:
+            return current_player_hit[random.randint(0, 1)]
         else:
-            return current_player_hit[random.randint(0, 5)]
+            return current_player_miss[random.randint(0, 1)]
     else:
-        if ship_hit is None:
-            return other_player_miss[random.randint(0, 5)]
+        if ship_hit:
+            return other_player_hit_carrier[random.randint(0, 1)]
         else:
-            return other_player_hit_carrier[random.randint(0, 4)]
+            return other_player_miss[random.randint(0, 1)]
 
 
 def make_player_won_message(player, winning_player):
