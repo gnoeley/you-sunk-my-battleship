@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 
 from hello.message import Message
+from .content_processor import process_content
 
 def receive(request):
     message = Message(
@@ -14,6 +15,6 @@ def receive(request):
     print('received message: ')
     print(message)
 
+    response = process_content(message.content)
 
-
-    return HttpResponse(message)
+    return HttpResponse(response)
