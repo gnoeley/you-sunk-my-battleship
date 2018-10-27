@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 # Ships
 CARRIER = 5
 BATTLESHIP = 4
@@ -8,6 +11,19 @@ DESTROYER = 2
 # Orientation
 VERTICAL = 0
 HORIZONTAL = 1
+
+
+class Players(Enum):
+    PLAYER_ONE = 1
+    PLAYER_TWO = 2
+
+
+class Game:
+
+    def __init__(self):
+        self.current_player = Players.PLAYER_ONE
+        self.player_one_board = create_empty_board()
+        self.player_two_board = create_empty_board()
 
 
 def create_empty_board():
