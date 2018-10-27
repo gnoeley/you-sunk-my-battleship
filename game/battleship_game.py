@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 # Ships
 CARRIER = 5
 BATTLESHIP = 4
@@ -25,16 +24,35 @@ class Game:
         self.player_one_board = create_empty_board()
         self.player_two_board = create_empty_board()
 
+    def place_some_ships(self):
+        place_ship(self.player_one_board, CARRIER, VERTICAL, [0, 0])
+        place_ship(self.player_two_board, DESTROYER, HORIZONTAL, [5, 3])
+
+    def player_turn(self, player, position):
+        # if player is not self.current_player: return
+
+        board = self.player_one_board if player is Players.PLAYER_ONE else self.player_two_board
+        take_fire(board, position)
+
+        self.current_player = Players.PLAYER_TWO if self.current_player is Players.PLAYER_ONE else Players.PLAYER_ONE
+
+        return {
+            Players.PLAYER_ONE: pretty_print_board(self.player_one_board),
+            Players.PLAYER_TWO: pretty_print_board(self.player_two_board)
+        }
+
 
 def create_empty_board():
     return [['e' for i in range(10)] for i in range(10)]
 
 
 def pretty_print_board(board):
+    result = ''
     for row in board:
         for position in row:
-            print(position, end=" ")
-        print()
+            result += position + ' '
+        result += '\n'
+    return result
 
 
 def place_ship(board, ship, orientation, position):
@@ -63,21 +81,19 @@ def check_is_winning_board(board):
 
 
 if __name__ == "__main__":
-    game_board = create_empty_board()
-    place_ship(game_board, CARRIER, VERTICAL, [0, 0])
-    place_ship(game_board, DESTROYER, HORIZONTAL, [5, 3])
-    pretty_print_board(game_board)
-    take_fire(game_board, [0, 1])
-    take_fire(game_board, [9, 9])
+    game = Game()
+    game.place_some_ships()
+
+    game.player_turn(Players.PLAYER_ONE, [0, 1])
+    game.player_turn(Players.PLAYER_ONE, [0, 0])
+    game.player_turn(Players.PLAYER_ONE, [0, 2])
+    game.player_turn(Players.PLAYER_ONE, [0, 3])
+    game.player_turn(Players.PLAYER_ONE, [0, 4])
+
+    game.player_turn(Players.PLAYER_TWO, [5, 3])
+    game.player_turn(Players.PLAYER_TWO, [6, 3])
+    final_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
+
+    print(final_state[Players.PLAYER_ONE])
     print()
-    pretty_print_board(game_board)
-    print(check_is_winning_board(game_board))
-    take_fire(game_board, [0, 0])
-    take_fire(game_board, [0, 2])
-    take_fire(game_board, [0, 3])
-    take_fire(game_board, [0, 4])
-    take_fire(game_board, [5, 3])
-    take_fire(game_board, [6, 3])
-    print()
-    pretty_print_board(game_board)
-    print(check_is_winning_board(game_board))
+    print(final_state[Players.PLAYER_TWO])
