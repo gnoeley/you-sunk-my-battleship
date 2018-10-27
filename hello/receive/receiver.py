@@ -11,5 +11,6 @@ def receive(request):
         content=request.GET.get('content'))
 
 
+    print('received message: ' + message)
 
     return HttpResponse(message)
