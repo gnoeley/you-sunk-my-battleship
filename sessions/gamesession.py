@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+from hello.models import Dbsession
 from hello.sms.smsSender import sendMessage
 from receive.keywords import Keyword
 
@@ -21,12 +22,31 @@ class PlayerState(Enum):
 
 class Session:
 
-    def __init__(self, player_1_num, player_2_num) -> None:
-        self.player_1_num = player_1_num
-        self.player_2_num = player_2_num
-        self.session_state = SessionState.STARTING
-        self.player_1_state = PlayerState.STARTING
-        self.player_2_state = PlayerState.NOT_JOINED
+    def __init__(self, player_1_num, player_2_num, dbSession: Dbsession) -> None:
+        if dbSession is None:
+            self.player_1_num = player_1_num
+            self.player_2_num = player_2_num
+            self.session_state = SessionState.STARTING
+            self.player_1_state = PlayerState.STARTING
+            self.player_2_state = PlayerState.NOT_JOINED
+        else:
+            self.player_1_num = dbSession.player1
+            self.player_2_num = dbSession.player2
+            self.session_state = SessionState[dbSession.session_state]
+            self.player_1_state = PlayerState[dbSession.player_1_state]
+            self.player_2_state = PlayerState[dbSession.player_2_state]
+            self.save()
+
+    def save(self):
+        dbSession = Dbsession()
+        dbSession.id=self.player_1_num + "##" + self.player_2_num
+        dbSession.player1=self.player_1_num
+        dbSession.player2=self.player_2_num
+        dbSession.session_state=self.session_state
+        dbSession.player_1_state=self.player_1_state
+        dbSession.player_2_state=self.player_2_state
+
+        dbSession.save()
 
     def invite_player_2(self):
         p1Message = self.player_2_num + ' has been invited'
@@ -37,6 +57,7 @@ class Session:
 
         self.player_2_state = PlayerState.INVITED
 
+        self.save()
         return {'p1': p1Message, 'p2': p2Message}
 
     def player_2_accepted_invite(self):
@@ -51,6 +72,7 @@ class Session:
         self.player_2_state = PlayerState.IN_GAME
         self.session_state = SessionState.IN_GAME
 
+        self.save()
         return {'p1': p1Message, 'p2': p2Message}
 
     def player_2_rejected_invite(self):
@@ -63,6 +85,7 @@ class Session:
         self.player_2_state = PlayerState.REJECTED
         self.session_state = SessionState.ENDED
 
+        self.save()
         return {'p1': p1Message, 'p2': p2Message}
 
     def player_1_quit(self):
@@ -75,6 +98,7 @@ class Session:
         self.player_1_state = PlayerState.QUIT
         self.session_state = SessionState.ENDED
 
+        self.save()
         return {'p1': p1Message, 'p2': p2Message}
 
     def player_2_quit(self):
@@ -87,6 +111,7 @@ class Session:
         self.player_2_state = PlayerState.QUIT
         self.session_state = SessionState.ENDED
 
+        self.save()
         return {'p1': p1Message, 'p2': p2Message}
 
     def __str__(self) -> str:
