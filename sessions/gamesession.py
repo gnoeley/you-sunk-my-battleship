@@ -50,11 +50,11 @@ class Session:
         print("Saved dbSession")
         print("new sessions: " + str(len(Dbsession.objects.all())) + " ---- " + str(Dbsession.objects.all()))
 
-    def restart(self, playerRestarting):
+    def restart(self, player_restarting):
 
-        if playerRestarting == self.player_2_num:
+        if player_restarting == self.player_2_num:
             self.player_2_num = self.player_1_num
-            self.player_1_num = playerRestarting
+            self.player_1_num = player_restarting
 
         self.session_state = SessionState.STARTING
         self.player_1_state = PlayerState.STARTING

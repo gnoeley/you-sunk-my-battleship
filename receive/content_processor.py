@@ -24,7 +24,7 @@ def process_content(message, sent_by):
         else:
             session = gamesession.Session(dbSession=dbSession)
             if session.session_state == gamesession.SessionState.ENDED:
-                return session.restart(playerRestarting=sent_by)
+                return session.restart(player_restarting=sent_by)
             else:
                 return 'invite already in a session'  # TODO: stuff and things
 

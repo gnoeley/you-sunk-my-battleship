@@ -1,8 +1,9 @@
-from sessions import sessions, gamesession
+from sessions import gamesession
+from sessions.gamesession import Session
 
 
-def invite(message, sent_by, to_num):
-    session = sessions.Sessions.add_session(sent_by, message)
+def invite(message, sent_by):
+    session = Session(player_1_num=sent_by, player_2_num=message)
     response = session.invite_player_2()
 
     print(response)
