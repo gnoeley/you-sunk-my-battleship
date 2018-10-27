@@ -24,12 +24,14 @@ class Session:
 
     def __init__(self, player_1_num='a', player_2_num='b', dbSession: Dbsession = None) -> object:
         if dbSession is None:
+            self.id = None
             self.player_1_num = player_1_num
             self.player_2_num = player_2_num
             self.session_state = SessionState.STARTING
             self.player_1_state = PlayerState.STARTING
             self.player_2_state = PlayerState.NOT_JOINED
         else:
+            self.id = dbSession.id
             self.player_1_num = dbSession.player1
             self.player_2_num = dbSession.player2
             self.session_state = SessionState[dbSession.session_state]
@@ -39,7 +41,15 @@ class Session:
 
     def save(self):
         print("SAVING")
-        dbSession = Dbsession()
+
+        dbSession = None
+        theId = self.id
+
+        if theId is None:
+            dbSession = Dbsession()
+        else:
+            dbSession = Dbsession.objects.get(id=theId)
+
         dbSession.player1=self.player_1_num
         dbSession.player2=self.player_2_num
         dbSession.session_state=self.session_state.name
@@ -47,12 +57,29 @@ class Session:
         dbSession.player_2_state=self.player_2_state.name
 
         dbSession.save()
+
+
+        self.id = dbSession.id  # Not sure if this works ... shrugs
+
         print("Saved dbSession")
         print("new sessions: " + str(len(Dbsession.objects.all())) + " ---- " + str(Dbsession.objects.all()))
 
+    def restart(self, player_restarting):
+
+        if player_restarting == self.player_2_num:
+            self.player_2_num = self.player_1_num
+            self.player_1_num = player_restarting
+
+        self.session_state = SessionState.STARTING
+        self.player_1_state = PlayerState.STARTING
+        self.player_2_state = PlayerState.STARTING
+        self.invite_player_2()
 
     def invite_player_2(self):
         print("INVITING " + str(self.player_2_num))
+
+        self.session_state = SessionState.STARTING
+        self.player_1_state = PlayerState.STARTING
 
         p1Message = self.player_2_num + ' has been invited'
         p2Message = self.player_1_num + ' has invited you to a game of Battleships - text ' + Keyword.ACCEPT.value + ' to join the game or ' + Keyword.QUIT.value + ' to refuse'
@@ -64,6 +91,7 @@ class Session:
 
         self.save()
         return {'p1': p1Message, 'p2': p2Message}
+
 
     def player_2_accepted_invite(self):
 
@@ -129,9 +157,45 @@ class Session:
             ", player 2 state:" + self.player_2_state.name + \
             "}"
 
-
     def process_game_action(self, sent_by, first_word, remainder):
         #  TODO: implement this
         return 'processing game action ' + first_word + ' from ' + sent_by + ' [' + remainder + ']'
 
+    @staticmethod
+    def findSession(p):
 
+        print('Finding session for: ' + p + Session.sessions_str())
+
+        theSession = Session.findSessionForPlayer1(p)
+        if theSession is None:
+            theSession = Session.findSessionForPlayer2(p)
+        return theSession
+
+    @staticmethod
+    def findSessionForPlayer1(p):
+        theSession = None
+        for sess in Dbsession.objects.all():
+            if sess.player1 == p:
+                theSession = sess
+
+        print(' Found ' + str(theSession or 'no session') + ' for p1: ' + p)
+        return theSession
+
+    @staticmethod
+    def findSessionForPlayer2(p):
+
+        theSession = None
+        for sess in Dbsession.objects.all():
+            print('iterating over sessions to find player2: "' + p + '" +  session.player2="' + sess.player2 + '", p2 equal? ' + str(sess.player2 == p))
+            if sess.player2 == p:
+                theSession = sess
+
+        print(' Found ' + str(theSession or 'no session') + ' for p2: ' + p)
+        return theSession
+
+    @staticmethod
+    def sessions_str() -> str:
+        s = ''
+        for sess in Dbsession.objects.all():
+            s = s + '\n\t\t' + str(sess)
+        return ' Sessions: ' + str(len(Dbsession.objects.all())) + " ---- " + s

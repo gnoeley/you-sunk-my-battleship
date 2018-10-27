@@ -10,3 +10,5 @@ then
 else
         python3 manage.py migrate
 fi
+
+heroku local
