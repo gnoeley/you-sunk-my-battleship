@@ -53,7 +53,7 @@ class Game:
         return {
             Players.PLAYER_ONE: pretty_print_board(self.player_one_board),
             Players.PLAYER_TWO: pretty_print_board(self.player_two_board),
-            'GAME_OVER': self.winning_player is None
+            'GAME_OVER': self.winning_player is not None
         }
 
     def make_player_won_message(self):
