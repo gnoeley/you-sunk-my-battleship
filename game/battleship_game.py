@@ -48,7 +48,8 @@ class Game:
     def make_player_won_message(self):
         return {
             Players.PLAYER_ONE: 'You won!' if self.winning_player is Players.PLAYER_ONE else 'You lose!',
-            Players.PLAYER_TWO: 'You won!' if self.winning_player is Players.PLAYER_TWO else 'You lose!'
+            Players.PLAYER_TWO: 'You won!' if self.winning_player is Players.PLAYER_TWO else 'You lose!',
+            'GAME_OVER': self.winning_player is not None
         }
 
 
@@ -98,12 +99,13 @@ if __name__ == "__main__":
     game.player_turn(Players.PLAYER_TWO, [6, 3])
     final_state = game.player_turn(Players.PLAYER_TWO, [9, 9])
 
+    print("Game Over? ", final_state['GAME_OVER'])
+    print('Player ONE: ', final_state[Players.PLAYER_ONE])
+    print('Player TWO: ', final_state[Players.PLAYER_TWO])
+
     game.player_turn(Players.PLAYER_ONE, [0, 1])
     game.player_turn(Players.PLAYER_ONE, [0, 0])
     game.player_turn(Players.PLAYER_ONE, [0, 2])
     game.player_turn(Players.PLAYER_ONE, [0, 3])
     game.player_turn(Players.PLAYER_ONE, [0, 4])
 
-    print('Player ONE: ', final_state[Players.PLAYER_ONE])
-    print()
-    print('Player TWO: ', final_state[Players.PLAYER_TWO])
