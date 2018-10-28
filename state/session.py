@@ -170,12 +170,13 @@ class Session:
         # Make new GameModel and persist
         if game is None:
             game = Game()
+            game.place_some_ships()
             game_model = GameModel.toModel(game)
             print('SAVING GAME')
             game_model.save()
             print('Saved game_model', game_model.id)
             print(game_model)
-            self.game_id = game.session_id = game_model.id
+            self.game_id = game.session_id = game_modelid
         else:
             print('GAME FOUND')
 
