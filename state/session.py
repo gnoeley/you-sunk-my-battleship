@@ -178,8 +178,12 @@ class Session:
 
         game_finished = game_response['GAME_OVER']
 
-        send_message_with_board(to=self.player_1_num, text=p1Message, board=game_response['PLAYER_2_BOARD'])
-        send_message_with_board(to=self.player_2_num, text=p2Message, board=game_response['PLAYER_1_BOARD'])
+        if game.current_player == Players.PLAYER_ONE:
+            send_message_with_board(to=self.player_1_num, text=p1Message, board=game_response['PLAYER_2_BOARD'])
+            send_message(to=self.player_2_num, text=p2Message)
+        else:
+            send_message(to=self.player_1_num, text=p1Message)
+            send_message_with_board(to=self.player_2_num, text=p2Message, board=game_response['PLAYER_1_BOARD'])
 
         # Persist GameModel
         game_model = GameModel.toModel(game)
@@ -188,7 +192,7 @@ class Session:
         return game_finished
 
     def find_game_for_session(self):
-        try:\
+        try:
             game = GameModel.objects.get(id=self.game_id).toGame()
         except GameModel.DoesNotExist:
             game = None
