@@ -51,7 +51,7 @@ class GameModel(models.Model):
             json.loads(self.player_one_board),
             json.loads(self.player_two_board),
             None if self.winning_player is None else Players[self.winning_player],
-            self.hits_taken
+            json.loads(self.hits_taken)
         )
 
     def __str__(self) -> str:
