@@ -1,14 +1,25 @@
+from enum import Enum
+
 from game.game_entities import Players, available_ships, Ships
 from game.messages import MessageMaker
 import random
 
+
+class CellState(Enum):
+    MISS = 'm'
+    EMPTY = 'e'
+    HIT = 'h'
+
+
 # Orientation
+
+
 VERTICAL = 0
 HORIZONTAL = 1
 
 
 def create_empty_board():
-    return [['e' for i in range(10)] for i in range(10)]
+    return [[CellState.EMPTY.value for i in range(10)] for i in range(10)]
 
 
 class Game:
@@ -95,6 +106,22 @@ class Game:
             'GAME_OVER': self.winning_player is not None
         }
 
+    def position_to_cell_state(self, position):
+        if position == CellState.EMPTY.value:
+            return CellState.EMPTY
+        if position == CellState.HIT.value:
+            return CellState.HIT
+        if position == CellState.MISS.value:
+            return CellState.MISS
+
+    def typed_player_board(self, board):
+        rows = []
+        for row in board:
+            cells = []
+            for position in row:
+                cells.append (self.position_to_cell_state(position))
+            rows.append(cells)
+        return rows
 
 def random_orientation():
     return random.randint(0, 1)
@@ -150,9 +177,9 @@ def take_fire(board, position):
 
     type_of_ship_hit = is_ship_position(board[y][x])
     if type_of_ship_hit:
-        board[y][x] = 'h'
-    elif board[y][x] is 'e':
-        board[y][x] = 'm'
+        board[y][x] = CellState.HIT.value
+    elif board[y][x] is CellState.EMPTY.value:
+        board[y][x] = CellState.MISS.value
 
     return type_of_ship_hit
 
