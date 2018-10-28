@@ -49,7 +49,7 @@ other_player = {
         'Submarine destroyed! Luckily it\'s pretty airtight, so people will die when the air runs out instead of drowning'
     ],
     Ships.DESTROYER.name: [
-        'Destroyer hit! Que titanic theme song',
+        'Destroyer hit! Cue titanic theme song',
         'Destroyer is down, those poor souls never had a chance'
     ]
 }
