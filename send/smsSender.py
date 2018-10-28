@@ -30,15 +30,22 @@ def send_message_with_board(to, text, board):
     headers = {'Content-Type': 'text/xml'} # set what your server accepts
     print(requests.post('https://api.clockworksms.com/xml/send.aspx', data=xml.encode('utf-8'), headers=headers).text)
 
-    encoded_board = encode_board(board)
+    encoded_board = encode_board(board, 0, 5)
     xml = build_xml(encoded_board, to)
-    print(len(encoded_board))
+    # print(len(encoded_board))
     headers = {'Content-Type': 'text/xml'} # set what your server accepts
     print(requests.post('https://api.clockworksms.com/xml/send.aspx', data=xml.encode('utf-8'), headers=headers).text)
+
+    encoded_board = encode_board(board, 5, 10)
+    xml = build_xml(encoded_board, to)
+    # print(len(encoded_board))
+    headers = {'Content-Type': 'text/xml'} # set what your server accepts
+    print(requests.post('https://api.clockworksms.com/xml/send.aspx', data=xml.encode('utf-8'), headers=headers).text)
+
     return xml
 
 
-def build_xml(content, phone_number='447528830422'):
+def build_xml(content, phone_number='447484292181'):
     return '<?xml version="1.0" encoding="UTF-8"?>' + \
            '<Message>' + \
            '<Key>' + os.environ.get('CLOCKWORK_API_KEY') + '</Key>' + \
