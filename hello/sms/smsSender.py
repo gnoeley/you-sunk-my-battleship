@@ -8,7 +8,7 @@ def sendMessage(to, text):
         print('Would have sent "' + text + '" to ' + to)
     else:
 
-        message = clockwork.SMS(to=to, message=text)
+        message = clockwork.SMS(to=to, message=text, from_name=os.environ.get('FROM_SMS'))
 
         response = api.send(message)
 
