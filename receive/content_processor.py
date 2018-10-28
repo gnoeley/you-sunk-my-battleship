@@ -33,7 +33,10 @@ def process_content(message, sent_by):
         return action_method(remainder, session, sent_by)
 
     else:
-        session.process_game_action(sent_by, first_word, remainder)
+        game_finished = session.process_game_action(sent_by, first_word, remainder)
+        if game_finished:
+            session.session_state = SessionState.ENDED
+            session.save()
 
 
 def process_invite(dbSession, remainder, sent_by):
