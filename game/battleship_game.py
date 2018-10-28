@@ -53,7 +53,9 @@ class Game:
         return {
             self.winning_player: 'You have already won! Send another INVITE to start a new game',
             other_player(self.winning_player): 'You have already lost! Send another INVITE to restore your honour',
-            'GAME_OVER': False
+            'GAME_OVER': False,
+            'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+            'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
         }
 
     def get_player_instructions(self):
@@ -63,7 +65,9 @@ class Game:
             return {
                 self.current_player: 'You\'re in a game it\'s your turn',
                 other_player(self.current_player): 'You\'re in a game it\'s another players turn',
-                'GAME_OVER': False
+                'GAME_OVER': False,
+                'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+                'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
             }
 
     def player_turn(self, player: Players, position):
@@ -71,7 +75,9 @@ class Game:
             return {
                 player: 'It is not your turn, patience!',
                 self.current_player: 'The other player is getting restless, please hurry up',
-                'GAME_OVER': False
+                'GAME_OVER': False,
+                'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+                'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
             }
 
         if self.winning_player is not None:
@@ -103,7 +109,9 @@ class Game:
                                                                 self.current_player,
                                                                 self.winning_player,
                                                                 type_of_ship_hit),
-            'GAME_OVER': self.winning_player is not None
+            'GAME_OVER': self.winning_player is not None,
+            'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+            'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
         }
 
     def position_to_cell_state(self, position):
@@ -119,9 +127,10 @@ class Game:
         for row in board:
             cells = []
             for position in row:
-                cells.append (self.position_to_cell_state(position))
+                cells.append(self.position_to_cell_state(position))
             rows.append(cells)
         return rows
+
 
 def random_orientation():
     return random.randint(0, 1)
