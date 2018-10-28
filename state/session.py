@@ -171,19 +171,21 @@ class Session:
 
         # Do player turn
         playing_player = self.get_player(sent_by)
-        game_model = process_action(game, first_word, playing_player, remainder)
+        game_response = process_action(game, first_word, playing_player, remainder)
 
-        p1Message = game_model[Players.PLAYER_ONE]
-        p2Message = game_model[Players.PLAYER_TWO]
+        p1Message = game_response[Players.PLAYER_ONE]
+        p2Message = game_response[Players.PLAYER_TWO]
+
+        game_finished = game_response['GAME_OVER']
+
         sendMessage(to=self.player_1_num, text=p1Message)
         sendMessage(to=self.player_2_num, text=p2Message)
 
         # Persist GameModel
         game_model = GameModel.toModel(game)
         game_model.save()
-        self
 
-        return 'processing game action ' + first_word + ' from ' + sent_by + ' [' + remainder + ']'
+        return game_finished
 
     def find_game_for_session(self):
         try:
