@@ -2,6 +2,7 @@ from enum import Enum
 
 from game.game_entities import Players, available_ships, Ships
 from game.messages import MessageMaker
+from game.event_occurances import event_check
 import random
 
 
@@ -88,6 +89,8 @@ class Game:
         type_of_ship_hit: Ships = take_fire(board, position)
         if check_is_winning_board(board):
             self.winning_player = self.current_player
+        elif self.winning_player == 'Draw':
+            print('Everyone loses!')
 
         message = self.make_message(type_of_ship_hit)
         self.current_player = Players.other_player(self.current_player)
@@ -101,19 +104,28 @@ class Game:
         return message
 
     def make_message(self, type_of_ship_hit):
-        return {
-            Players.PLAYER_ONE: self.message_maker.make_message(Players.PLAYER_ONE,
-                                                                self.current_player,
-                                                                self.winning_player,
-                                                                type_of_ship_hit),
-            Players.PLAYER_TWO: self.message_maker.make_message(Players.PLAYER_TWO,
-                                                                self.current_player,
-                                                                self.winning_player,
-                                                                type_of_ship_hit),
-            'GAME_OVER': self.winning_player is not None,
-            'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
-            'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
-        }
+        player_message = event_check()
+
+        if game.winning_player == 'Draw':
+            return {
+                Players.PLAYER_ONE: player_message,
+                Players.PLAYER_TWO: player_message,
+                'GAME_OVER': 'Draw'
+            }
+        else:
+            return {
+                Players.PLAYER_ONE: self.message_maker.make_message(Players.PLAYER_ONE,
+                                                                    self.current_player,
+                                                                    self.winning_player,
+                                                                    type_of_ship_hit),
+                Players.PLAYER_TWO: self.message_maker.make_message(Players.PLAYER_TWO,
+                                                                    self.current_player,
+                                                                    self.winning_player,
+                                                                    type_of_ship_hit),
+                'GAME_OVER': self.winning_player is not None,
+                'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+                'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
+            }
 
     def position_to_cell_state(self, position):
         if position == CellState.EMPTY.value:
@@ -195,6 +207,9 @@ def take_fire(board, position):
 
 
 def check_is_winning_board(board):
+    if game.winning_player == 'Draw':
+        return True
+
     for row in board:
         for position in row:
             if is_ship_position(position):
@@ -211,11 +226,34 @@ def pretty_print_board(board):
     return result
 
 
+def find_current_board():
+    if game.current_player == Players.PLAYER_ONE:
+        return game.player_one_board
+    else:
+        return game.player_two_board
+
+
+def sink_random_ship():
+    randomIdx = random.randint(0, 4)
+    keys = [key for key in available_ships.keys()]
+    randomKey = keys[randomIdx]
+
+    target = available_ships[randomKey]
+    print(randomKey)
+    board = find_current_board()
+    for row in board:
+        for [x, y] in row:
+            if board[x][y] == randomKey:
+                board[x][y] = 'h'
+
+
 if __name__ == "__main__":
     game = Game()
     game.place_some_ships()
     print(pretty_print_board(game.player_one_board))
     print(pretty_print_board(game.player_two_board))
+
+    sink_random_ship()
 
     game_state = game.player_turn(Players.PLAYER_ONE, [5, 3])
     print('Player ONE: ', game_state[Players.PLAYER_ONE])

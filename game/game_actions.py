@@ -2,6 +2,7 @@ from enum import Enum
 
 from game.battleship_game import Game
 from game.game_entities import Players
+from game.event_occurances import event_check
 
 
 class GameAction(Enum):
@@ -15,7 +16,7 @@ class GameAction(Enum):
 def process_fire(game: Game, player: Players, message: str):
     coords = parse_coordinate(message)
     print('Player ' + str(player) + ' is firing at ' + str(coords))
-    return game.player_turn(player=player,position=coords)
+    return game.player_turn(player=player, position=coords)
 
 
 GAME_ACTIONS = {

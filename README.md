@@ -13,7 +13,7 @@ $ git clone https://github.com/heroku/python-getting-started.git
 $ cd python-getting-started
 
 $ python3 -m venv getting-started
-$ pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 
 $ createdb python_getting_started (to restart run `bash wipe-db.sh` if you're special run `bash wipe-db.sh true`)
 
