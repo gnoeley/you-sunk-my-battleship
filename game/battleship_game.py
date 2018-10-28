@@ -74,6 +74,10 @@ class Game:
         message = self.make_message(type_of_ship_hit)
         self.current_player = other_player(self.current_player)
 
+        print('PLAYER_ONE: \n', pretty_print_board(self.player_one_board))
+        print()
+        print('PLAYER_TWO: \n', pretty_print_board(self.player_two_board))
+
         return message
 
     def make_message(self, type_of_ship_hit):

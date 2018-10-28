@@ -4,6 +4,7 @@ import json
 
 # Create your models here.
 from game.battleship_game import Game
+from game.game_entities import Players
 
 
 class Greeting(models.Model):
@@ -44,24 +45,24 @@ class GameModel(models.Model):
         return json.load(self.player_two_board)
 
 
-    def fromModel(self):
+    def toGame(self):
         return Game(
             self.id,
-            self.current_player,
-            json.load(self.player_one_board),
-            json.load(self.player_two_board),
-            self.winning_player
+            Players[self.current_player],
+            json.loads(self.player_one_board),
+            json.loads(self.player_two_board),
+            None if self.winning_player is None else Players[self.winning_player]
         )
 
     def __str__(self) -> str:
         winning_player = '' if self.winning_player is None else self.winning_player.name
         return "Game: {" \
             "id:" + str(self.id) + \
-            ", current_player" + self.current_player.name + \
-            ", player_one_board" + self.player_one_board + \
-            ", player_two_board" + self.player_two_board + \
-            ", winning_player" + winning_player + \
-            ", hits_taken" + self.hits_taken + \
+            ", current_player: " + self.current_player + \
+            ", player_one_board: " + self.player_one_board + \
+            ", player_two_board: " + self.player_two_board + \
+            ", winning_player: " + winning_player + \
+            ", hits_taken: " + self.hits_taken + \
             "}"
 
     @staticmethod
@@ -71,10 +72,10 @@ class GameModel(models.Model):
         if game.session_id:
             model.id = game.session_id
 
-        model.current_player = game.current_player
+        model.current_player = game.current_player.name
         model.player_one_board = json.dumps(game.player_one_board)
         model.player_two_board = json.dumps(game.player_two_board)
-        model.winning_player = game.winning_player
+        model.winning_player = None if game.winning_player is None else game.winning_player.name
         model.hits_taken = json.dumps(game.message_maker.hits_taken)
 
         return model
