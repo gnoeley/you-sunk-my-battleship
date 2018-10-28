@@ -74,9 +74,11 @@ class Game:
         message = self.make_message(type_of_ship_hit)
         self.current_player = other_player(self.current_player)
 
-        print('PLAYER_ONE: \n', pretty_print_board(self.player_one_board))
+        print('PLAYER_ONE:')
+        print(pretty_print_board(self.player_one_board))
         print()
-        print('PLAYER_TWO: \n', pretty_print_board(self.player_two_board))
+        print('PLAYER_TWO:')
+        print(pretty_print_board(self.player_two_board))
 
         return message
 
@@ -138,7 +140,7 @@ def is_valid_placement(board, ship, orientation, position):
 
 def is_ship_position(position):
     for type_of_ship, ship in available_ships.items():
-        if position is ship.character:
+        if position == ship.character:
             return type_of_ship
     return None
 
