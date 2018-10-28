@@ -6,6 +6,7 @@ from send.smsSender import send_message, send_message_with_board
 from receive.keywords import Keyword
 from game.game_actions import process_action
 
+
 class SessionState(Enum):
     STARTING = auto()
     IN_GAME = auto()
@@ -53,15 +54,14 @@ class Session:
         else:
             dbSession = Dbsession.objects.get(id=theId)
 
-        dbSession.game_id=self.game_id
-        dbSession.player1=self.player_1_num
-        dbSession.player2=self.player_2_num
-        dbSession.session_state=self.session_state.name
-        dbSession.player_1_state=self.player_1_state.name
-        dbSession.player_2_state=self.player_2_state.name
+        dbSession.game_id = self.game_id
+        dbSession.player1 = self.player_1_num
+        dbSession.player2 = self.player_2_num
+        dbSession.session_state = self.session_state.name
+        dbSession.player_1_state = self.player_1_state.name
+        dbSession.player_2_state = self.player_2_state.name
 
         dbSession.save()
-
 
         self.id = dbSession.id  # Not sure if this works ... shrugs
 
@@ -69,8 +69,6 @@ class Session:
         print("new sessions: " + str(len(Dbsession.objects.all())) + " ---- " + str(Dbsession.objects.all()))
 
     def restart(self, player_restarting, other_player):
-
-
 
         if player_restarting == self.player_2_num:
             self.player_1_num = player_restarting
@@ -100,7 +98,6 @@ class Session:
 
         self.save()
         return {'p1': p1Message, 'p2': p2Message}
-
 
     def player_2_accepted_invite(self):
 
@@ -178,7 +175,9 @@ class Session:
 
         game_finished = game_response['GAME_OVER']
 
-        if game.current_player == Players.PLAYER_ONE:
+        next_player = game.current_player  # it has been updated :)
+
+        if next_player == Players.PLAYER_TWO:
             send_message_with_board(to=self.player_1_num, text=p1Message, board=game_response['PLAYER_2_BOARD'])
             send_message(to=self.player_2_num, text=p2Message)
         else:
@@ -243,7 +242,9 @@ class Session:
 
         theSession = None
         for sess in Dbsession.objects.all():
-            print('iterating over sessions to find player2: "' + p + '" +  session.player2="' + sess.player2 + '", p2 equal? ' + str(sess.player2 == p))
+            print(
+                'iterating over sessions to find player2: "' + p + '" +  session.player2="' + sess.player2 + '", p2 equal? ' + str(
+                    sess.player2 == p))
             if sess.player2 == p:
                 theSession = sess
 
