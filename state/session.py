@@ -1,9 +1,10 @@
 from enum import Enum, auto
 
-from hello.models import Dbsession
+from game.battleship_game import Game, Players
+from hello.models import Dbsession, GameModel
 from send.smsSender import sendMessage
 from receive.keywords import Keyword
-
+from game.game_actions import process_action
 
 class SessionState(Enum):
     STARTING = auto()
@@ -22,9 +23,10 @@ class PlayerState(Enum):
 
 class Session:
 
-    def __init__(self, player_1_num='a', player_2_num='b', dbSession: Dbsession = None) -> object:
+    def __init__(self, player_1_num='a', player_2_num='b', dbSession: Dbsession = None):
         if dbSession is None:
             self.id = None
+            self.game_id = None
             self.player_1_num = player_1_num
             self.player_2_num = player_2_num
             self.session_state = SessionState.STARTING
@@ -32,6 +34,7 @@ class Session:
             self.player_2_state = PlayerState.NOT_JOINED
         else:
             self.id = dbSession.id
+            self.game_id = dbSession.game_id
             self.player_1_num = dbSession.player1
             self.player_2_num = dbSession.player2
             self.session_state = SessionState[dbSession.session_state]
@@ -50,6 +53,7 @@ class Session:
         else:
             dbSession = Dbsession.objects.get(id=theId)
 
+        dbSession.game_id=self.game_id
         dbSession.player1=self.player_1_num
         dbSession.player2=self.player_2_num
         dbSession.session_state=self.session_state.name
@@ -158,8 +162,50 @@ class Session:
             "}"
 
     def process_game_action(self, sent_by, first_word, remainder):
-        #  TODO: implement this
+        game = self.find_game_for_session()
+
+        # Do player turn
+        playing_player = self.get_player(sent_by)
+        game_model = process_action(game, first_word, playing_player, remainder)
+
+        p1Message = game_model[Players.PLAYER_ONE]
+        p2Message = game_model[Players.PLAYER_TWO]
+        sendMessage(to=self.player_1_num, text=p1Message)
+        sendMessage(to=self.player_2_num, text=p2Message)
+
+        # Persist GameModel
+        game_model = GameModel.toModel(game)
+        game_model.save()
+        self
+
         return 'processing game action ' + first_word + ' from ' + sent_by + ' [' + remainder + ']'
+
+    def find_game_for_session(self):
+        try:
+            game = GameModel.objects.get(id=self.game_id).toGame()
+        except GameModel.DoesNotExist:
+            game = None
+        # Make new GameModel and persist
+        if game is None:
+            game = Game()
+            game.place_some_ships()
+            game_model = GameModel.toModel(game)
+            print('CREATING NEW GAME')
+            game_model.save()
+            print('Created new game_model', game_model.id)
+            print(game_model)
+            self.game_id = game.session_id = game_model.id
+            self.save()
+        else:
+            print('GAME FOUND')
+            print(game)
+        return game
+
+    def get_player(self, phone_num: str):
+        if phone_num == self.player_1_num:
+            return Players.PLAYER_ONE
+        else:
+            return Players.PLAYER_TWO
 
     @staticmethod
     def findSession(p):

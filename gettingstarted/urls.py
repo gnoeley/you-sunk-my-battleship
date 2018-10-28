@@ -21,5 +21,6 @@ urlpatterns = [
     path("ping", hello.ping.ping.pong, name="pong"),
     path("receive", receiver.receive, name='receive'),
     path("db/", hello.views.db, name="db"),
+    path('board-print/', hello.views.board_print, name="board-print" ),
     path("admin/", admin.site.urls),
 ]

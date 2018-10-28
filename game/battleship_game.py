@@ -1,5 +1,5 @@
-from game import messages
-from enum import Enum
+from game.game_entities import Players, available_ships, Ships
+from game.messages import MessageMaker
 import random
 
 # Orientation
@@ -7,42 +7,23 @@ VERTICAL = 0
 HORIZONTAL = 1
 
 
-class Players(Enum):
-    PLAYER_ONE = 1
-    PLAYER_TWO = 2
-
-
-class Ship:
-    def __init__(self, size, character):
-        self.size = size
-        self.character = character
-
-
-class Ships(Enum):
-    CARRIER = 1,
-    BATTLESHIP = 2,
-    CRUISER = 3,
-    SUBMARINE = 4,
-    DESTROYER = 5
-
-
-available_ships = {
-    Ships.CARRIER: Ship(5, 'CA'),
-    Ships.BATTLESHIP: Ship(4, 'B'),
-    Ships.CRUISER: Ship(3, 'CR'),
-    Ships.SUBMARINE: Ship(3, 'S'),
-    Ships.DESTROYER: Ship(2, 'D')
-}
+def create_empty_board():
+    return [['e' for i in range(10)] for i in range(10)]
 
 
 class Game:
-
-    def __init__(self):
-        self.message_maker = messages.MessageMaker()
-        self.current_player = Players.PLAYER_ONE
-        self.player_one_board = create_empty_board()
-        self.player_two_board = create_empty_board()
-        self.winning_player = None
+    def __init__(self,
+                 session_id=None,
+                 current_player=Players.PLAYER_ONE,
+                 player_one_board=None,
+                 player_two_board=None,
+                 winning_player=None):
+        self.session_id = session_id
+        self.message_maker = MessageMaker()
+        self.current_player = current_player
+        self.player_one_board = player_one_board if player_one_board is not None else create_empty_board()
+        self.player_two_board = player_two_board if player_two_board is not None else create_empty_board()
+        self.winning_player = winning_player
 
     def place_some_ships(self):
         for player_board in [self.player_one_board, self.player_two_board]:
@@ -57,9 +38,33 @@ class Game:
             while not place_ship(player_board, available_ships[Ships.DESTROYER], random_orientation(), random_board_position()):
                 pass
 
-    def player_turn(self, player, position):
+    def build_game_won_message(self):
+        return {
+            self.winning_player: 'You have already won! Send another INVITE to start a new game',
+            other_player(self.winning_player): 'You have already lost! Send another INVITE to restore your honour',
+            'GAME_OVER': False
+        }
+
+    def get_player_instructions(self):
         if self.winning_player is not None:
-            return self.make_message()
+            return self.build_game_won_message()
+        else:
+            return {
+                self.current_player: 'You\'re in a game it\'s your turn',
+                other_player(self.current_player): 'You\'re in a game it\'s another players turn',
+                'GAME_OVER': False
+            }
+
+    def player_turn(self, player: Players, position):
+        if player != self.current_player:
+            return {
+                player: 'It is not your turn, patience!',
+                self.current_player: 'The other player is getting restless, please hurry up',
+                'GAME_OVER': False
+            }
+
+        if self.winning_player is not None:
+            return self.build_game_won_message()
 
         board = self.player_one_board if player is Players.PLAYER_ONE else self.player_two_board
         type_of_ship_hit: Ships = take_fire(board, position)
@@ -67,7 +72,11 @@ class Game:
             self.winning_player = self.current_player
 
         message = self.make_message(type_of_ship_hit)
-        self.current_player = Players.PLAYER_TWO if self.current_player is Players.PLAYER_ONE else Players.PLAYER_ONE
+        self.current_player = other_player(self.current_player)
+
+        print('PLAYER_ONE: \n', pretty_print_board(self.player_one_board))
+        print()
+        print('PLAYER_TWO: \n', pretty_print_board(self.player_two_board))
 
         return message
 
@@ -83,10 +92,6 @@ class Game:
                                                                 type_of_ship_hit),
             'GAME_OVER': self.winning_player is not None
         }
-
-
-def create_empty_board():
-    return [['e' for i in range(10)] for i in range(10)]
 
 
 def random_orientation():
@@ -165,6 +170,10 @@ def pretty_print_board(board):
             result += ('s' if is_ship_position(position) else position) + ' '
         result += '\n'
     return result
+
+
+def other_player(player: Players):
+    return Players.PLAYER_ONE if player is Players.PLAYER_TWO else Players.PLAYER_TWO
 
 
 if __name__ == "__main__":

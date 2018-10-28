@@ -1,6 +1,6 @@
-from .battleship_game import Ships
-from .battleship_game import Players
 import random
+
+from game.game_entities import Ships, Players
 
 current_player_miss = [
     'Try again loser',
