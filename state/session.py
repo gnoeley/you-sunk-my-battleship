@@ -196,6 +196,11 @@ class Session:
         if game is None:
             game = Game()
             game.place_some_ships()
+
+            instructions = game.get_player_instructions()
+            send_message(to=self.player_1_num, text=instructions[Players.PLAYER_ONE])
+            send_message(to=self.player_2_num, text=instructions[Players.PLAYER_TWO])
+
             game_model = GameModel.toModel(game)
             print('CREATING NEW GAME')
             game_model.save()
