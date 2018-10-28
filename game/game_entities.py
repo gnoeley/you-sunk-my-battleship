@@ -5,6 +5,10 @@ class Players(Enum):
     PLAYER_ONE = 1
     PLAYER_TWO = 2
 
+    @classmethod
+    def other_player(cls, player):
+        return Players.PLAYER_ONE if player is Players.PLAYER_TWO else Players.PLAYER_TWO
+
 
 class Ship:
     def __init__(self, size, character):

@@ -26,6 +26,11 @@ def send_message(to, text):
 
 
 def send_message_with_board(to, text, board):
+
+    if os.environ.get('SEND_SMS') != 'True':
+        print('would have sent ' + text + ' - with board to ' + to)
+        return
+
     xml = build_xml(text, to)
     headers = {'Content-Type': 'text/xml'} # set what your server accepts
     print(requests.post('https://api.clockworksms.com/xml/send.aspx', data=xml.encode('utf-8'), headers=headers).text)

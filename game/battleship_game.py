@@ -53,7 +53,7 @@ class Game:
     def build_game_won_message(self):
         return {
             self.winning_player: 'You have already won! Send another INVITE to start a new game',
-            other_player(self.winning_player): 'You have already lost! Send another INVITE to restore your honour',
+            Players.other_player(self.winning_player): 'You have already lost! Send another INVITE to restore your honour',
             'GAME_OVER': False,
             'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
             'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
@@ -65,7 +65,7 @@ class Game:
         else:
             return {
                 self.current_player: 'You\'re in a game it\'s your turn. Text \'FIRE\' followed by your coordinates to attack.',
-                other_player(self.current_player): 'You\'re in a game it\'s another players turn. Text \'FIRE\' followed by your coordinates to attack once the other player has been.',
+                Players.other_player(self.current_player): 'You\'re in a game it\'s another players turn. Text \'FIRE\' followed by your coordinates to attack once the other player has been.',
                 'GAME_OVER': False,
                 'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
                 'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
@@ -90,7 +90,7 @@ class Game:
             self.winning_player = self.current_player
 
         message = self.make_message(type_of_ship_hit)
-        self.current_player = other_player(self.current_player)
+        self.current_player = Players.other_player(self.current_player)
 
         print('PLAYER_ONE:')
         print(pretty_print_board(self.player_one_board))
@@ -209,10 +209,6 @@ def pretty_print_board(board):
             result += ('s' if is_ship_position(position) else position) + ' '
         result += '\n'
     return result
-
-
-def other_player(player: Players):
-    return Players.PLAYER_ONE if player is Players.PLAYER_TWO else Players.PLAYER_TWO
 
 
 if __name__ == "__main__":

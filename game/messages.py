@@ -1,15 +1,15 @@
 import random
 
-from game.game_entities import Ships, Players
+from game.game_entities import Ships, Players, available_ships
 
-current_player_miss = [
+message_to_player_when_missing_opponent = [
     'Try again loser',
     'Small children have better aim',
     'You hit one! If hit one is slang for not even close',
     'Missed, maybe try your hand at world peace instead of war'
 ]
 
-current_player_hit = [
+message_to_player_when_hitting_opponent = [
     'BOOM! You got one',
     'Spot on!',
     'Bang! That sound of people screaming is because you did a good job',
@@ -18,13 +18,13 @@ current_player_hit = [
     'Well done.'
 ]
 
-other_player_miss = [
+message_to_player_when_other_player_missed = [
     'All your ships are still safe',
     'No damage this time',
     'Your ships are hanging on'
 ]
 
-other_player = {
+message_to_player_when_own_ship_hit = {
     Ships.CARRIER.name: [
         'Your carrier is hit! Minimal damage sustained',
         'Your carrier is hit again! Distress signal launched!',
@@ -74,6 +74,9 @@ class MessageMaker:
             }
         } if hits_take is None else hits_take
 
+    def is_ship_sunk(self, player: Players, ship: Ships):
+        return self.hits_taken[player.name][ship.name] >= available_ships[ship].size
+
     @staticmethod
     def make_turn_status(player, current_player):
         if player == current_player:
@@ -88,17 +91,20 @@ class MessageMaker:
         current_player_turn = player is current_player
         if current_player_turn:
             if type_of_ship_hit:
-                return current_player_hit[random.randint(0, 5)]
+                if self.is_ship_sunk(Players.other_player(current_player), type_of_ship_hit):
+                    return 'You sunk their ' + type_of_ship_hit.name.lower() + "!"
+                else:
+                    return message_to_player_when_hitting_opponent[random.randint(0, 5)]
             else:
-                return current_player_miss[random.randint(0, 2)]
+                return message_to_player_when_missing_opponent[random.randint(0, 2)]
         else:
             if type_of_ship_hit:
                 type_of_ship_name = type_of_ship_hit.name
-                message = other_player[type_of_ship_name][self.hits_taken[player.name][type_of_ship_name]]
+                message = message_to_player_when_own_ship_hit[type_of_ship_name][self.hits_taken[player.name][type_of_ship_name]]
                 self.hits_taken[player.name][type_of_ship_name] += 1
                 return message
             else:
-                return other_player_miss[random.randint(0, 2)]
+                return message_to_player_when_other_player_missed[random.randint(0, 2)]
 
     @staticmethod
     def make_player_won_message(player, winning_player):
