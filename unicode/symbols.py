@@ -25,3 +25,8 @@ number_symbols = {
     '8': '8️⃣',
     '9': '9️⃣'
 }
+cell_symbols = {
+    'BLANK': '️⃣',
+    'MISS': '❎',
+    'HIT': '✅',
+}
