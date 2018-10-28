@@ -12,3 +12,9 @@ letter_symbols = {
     'I': '🇮',
     'J': '🇯',
 }
+
+cell_symbols = {
+    'BLANK': '⬜',
+    'MISS': '❎',
+    'HIT': '✅',
+}

@@ -1,7 +1,7 @@
 
 import requests
 import os
-from unicode.symbols import letter_symbols
+from unicode.symbols import letter_symbols, cell_symbols
 
 column_labels = u'\u00a0'.join([
     letter_symbols.get('A'),
@@ -15,14 +15,29 @@ column_labels = u'\u00a0'.join([
     letter_symbols.get('I'),
     letter_symbols.get('J')])
 
+
+
+def get_cell_symbol(isHit):
+    if isHit is None:
+        return cell_symbols.get('BLANK')
+    elif isHit:
+        return cell_symbols.get('HIT')
+    else:
+        return cell_symbols.get('MISS')
+
+
+def encode_row(rownum, hits):
+    row = str(rownum)
+    return row + (''.join(map(get_cell_symbol, hits)))
+
+
 unicodeBoard = \
     column_labels + ' \n' + \
-    '1◽◽◽◽◽◽◽◽\n' + \
+    encode_row(1, [None, None, True, False, None]) + '\n' + \
     '2◽◽◽◽◽◽◽◽\n' + \
     '3◽◽◽◽◽◽◽◽\n' + \
     '4◽◽◽◽◽◽◽◽\n' + \
     '5◽◽◽◽◽◽◽◽\n'
-
 
 def build_board_xml(aBoard):
     board = unicodeBoard
