@@ -57,6 +57,23 @@ class Game:
             while not place_ship(player_board, available_ships[Ships.DESTROYER], random_orientation(), random_board_position()):
                 pass
 
+    def build_game_won_message(self):
+        return {
+            self.winning_player: 'You have already won! Send another INVITE to start a new game',
+            other_player(self.winning_player): 'You have already lost! Send another INVITE to restore your honour',
+            'GAME_OVER': False
+        }
+
+    def get_player_instructions(self):
+        if self.winning_player is not None:
+            return self.build_game_won_message()
+        else:
+            return {
+                self.current_player: 'You\'re in a game it\'s your turn',
+                other_player(self.current_player): 'You\'re in a game it\'s another players turn',
+                'GAME_OVER': False
+            }
+
     def player_turn(self, player: Players, position):
         if player != self.current_player:
             return {
@@ -66,11 +83,7 @@ class Game:
             }
 
         if self.winning_player is not None:
-            return {
-                self.winning_player: 'You have already won! Send another INVITE to start a new game',
-                other_player(self.winning_player): 'You have already lost! Send another INVITE to restore your honour',
-                'GAME_OVER': False
-            }
+            return self.build_game_won_message()
 
         board = self.player_one_board if player is Players.PLAYER_ONE else self.player_two_board
         type_of_ship_hit: Ships = take_fire(board, position)
