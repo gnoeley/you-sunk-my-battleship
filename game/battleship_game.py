@@ -64,8 +64,8 @@ class Game:
             return self.build_game_won_message()
         else:
             return {
-                self.current_player: 'You\'re in a game it\'s your turn',
-                other_player(self.current_player): 'You\'re in a game it\'s another players turn',
+                self.current_player: 'You\'re in a game it\'s your turn. Text \'FIRE\' followed by your coordinates to attack.',
+                other_player(self.current_player): 'You\'re in a game it\'s another players turn. Text \'FIRE\' followed by your coordinates to attack once the other player has been.',
                 'GAME_OVER': False,
                 'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
                 'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
