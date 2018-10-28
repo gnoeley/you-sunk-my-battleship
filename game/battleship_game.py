@@ -1,8 +1,8 @@
+import os
 from enum import Enum
 
 from game.game_entities import Players, available_ships, Ships
 from game.messages import MessageMaker
-from game.event_occurances import event_check
 import random
 
 
@@ -23,6 +23,13 @@ def create_empty_board():
     return [[CellState.EMPTY.value for i in range(10)] for i in range(10)]
 
 
+def is_ship_position(position):
+    for type_of_ship, ship in available_ships.items():
+        if position == ship.character:
+            return type_of_ship
+    return None
+
+
 class Game:
     def __init__(self,
                  session_id=None,
@@ -30,8 +37,10 @@ class Game:
                  player_one_board=None,
                  player_two_board=None,
                  winning_player=None,
+                 game_drawn=False,
                  hit_taken=None):
         self.session_id = session_id
+        self.game_drawn = game_drawn
         self.message_maker = MessageMaker(hit_taken)
         self.current_player = current_player
         self.player_one_board = player_one_board if player_one_board is not None else create_empty_board()
@@ -60,7 +69,20 @@ class Game:
             'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
         }
 
+    def build_game_drawn_message(self):
+        return {
+            Players.PLAYER_ONE: 'Everybody died. R.I.P. Send another INVITE to start a new game',
+            Players.PLAYER_TWO: 'Everybody died. R.I.P. Send another INVITE to start a new game',
+            'GAME_OVER': True,
+            'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+            'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
+        }
+
+
     def get_player_instructions(self):
+        if self.game_drawn:
+            return self.build_game_drawn_message()
+
         if self.winning_player is not None:
             return self.build_game_won_message()
         else:
@@ -71,6 +93,34 @@ class Game:
                 'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
                 'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
             }
+
+    def process_random_events(self):
+        print('RANDOMAT')
+        if random.random() < float(os.environ.get('KRAKEN_CHANCE')):
+            return self.release_the_kraken()
+
+        # elif random.random() < 0.03:
+        #     return{
+        #         Game.current_player: 'Pirates have come for your bounty! They plunder your '
+        #                              + Ships.name
+        #                              + 'and your shipmates are made to walk the plank',
+        #         other_player(Game.current_player): 'The enemy has been attacked by pirates! Their battleship is no longer standing'
+        #     }
+        # elif random.random() < 0.05:
+        #     return 'A Tsunami hit! Your Submarine has been washed away..'
+        # elif random.random() < 0.07:
+        #     return 'The enemy has cracked your secret code! Maybe next time don\'t use A=1..'
+        # elif random.random() < 0.09:
+        #     return 'Mutiny on board! Your second in command reveals your location to an enemy ship'
+
+    def release_the_kraken(self):
+        print('Releasing the Kraken')
+        self.game_drawn = 'Draw'
+        return {
+            Players.PLAYER_ONE: 'A Kraken rises out of the sea! There were no survivors',
+            Players.PLAYER_TWO: 'A Kraken rises out of the sea! There were no survivors',
+            'GAME_OVER': True,
+        }
 
     def player_turn(self, player: Players, position):
         if player != self.current_player:
@@ -87,7 +137,7 @@ class Game:
 
         board = self.player_two_board if player is Players.PLAYER_ONE else self.player_one_board
         type_of_ship_hit: Ships = take_fire(board, position)
-        if check_is_winning_board(board):
+        if self.check_is_winning_board(board):
             self.winning_player = self.current_player
         elif self.winning_player == 'Draw':
             print('Everyone loses!')
@@ -104,28 +154,20 @@ class Game:
         return message
 
     def make_message(self, type_of_ship_hit):
-        player_message = event_check()
 
-        if game.winning_player == 'Draw':
-            return {
-                Players.PLAYER_ONE: player_message,
-                Players.PLAYER_TWO: player_message,
-                'GAME_OVER': 'Draw'
-            }
-        else:
-            return {
-                Players.PLAYER_ONE: self.message_maker.make_message(Players.PLAYER_ONE,
-                                                                    self.current_player,
-                                                                    self.winning_player,
-                                                                    type_of_ship_hit),
-                Players.PLAYER_TWO: self.message_maker.make_message(Players.PLAYER_TWO,
-                                                                    self.current_player,
-                                                                    self.winning_player,
-                                                                    type_of_ship_hit),
-                'GAME_OVER': self.winning_player is not None,
-                'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
-                'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
-            }
+        return {
+            Players.PLAYER_ONE: self.message_maker.make_message(Players.PLAYER_ONE,
+                                                                self.current_player,
+                                                                self.winning_player,
+                                                                type_of_ship_hit),
+            Players.PLAYER_TWO: self.message_maker.make_message(Players.PLAYER_TWO,
+                                                                self.current_player,
+                                                                self.winning_player,
+                                                                type_of_ship_hit),
+            'GAME_OVER': self.winning_player is not None,
+            'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+            'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
+        }
 
     def position_to_cell_state(self, position):
         if position == CellState.EMPTY.value:
@@ -143,6 +185,16 @@ class Game:
                 cells.append(self.position_to_cell_state(position))
             rows.append(cells)
         return rows
+
+    def check_is_winning_board(self, board):
+        if self.winning_player == 'Draw':
+            return True
+
+        for row in board:
+            for position in row:
+                if is_ship_position(position):
+                    return False
+        return True
 
 
 def random_orientation():
@@ -187,13 +239,6 @@ def is_valid_placement(board, ship, orientation, position):
     return True
 
 
-def is_ship_position(position):
-    for type_of_ship, ship in available_ships.items():
-        if position == ship.character:
-            return type_of_ship
-    return None
-
-
 def take_fire(board, position):
     x, y = position
 
@@ -204,17 +249,6 @@ def take_fire(board, position):
         board[y][x] = CellState.MISS.value
 
     return type_of_ship_hit
-
-
-def check_is_winning_board(board):
-    if game.winning_player == 'Draw':
-        return True
-
-    for row in board:
-        for position in row:
-            if is_ship_position(position):
-                return False
-    return True
 
 
 def pretty_print_board(board):

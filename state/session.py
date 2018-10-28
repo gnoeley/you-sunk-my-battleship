@@ -184,6 +184,12 @@ class Session:
             send_message(to=self.player_1_num, text=p1Message)
             send_message_with_board(to=self.player_2_num, text=p2Message, board=game_response['PLAYER_1_BOARD'])
 
+        random_event_messages = game.process_random_events()
+        if random_event_messages:
+            send_message(to=self.player_1_num, text=random_event_messages[Players.PLAYER_ONE])
+            send_message(to=self.player_2_num, text=random_event_messages[Players.PLAYER_TWO])
+            game_finished = random_event_messages['GAME_OVER']
+
         # Persist GameModel
         game_model = GameModel.toModel(game)
         game_model.save()

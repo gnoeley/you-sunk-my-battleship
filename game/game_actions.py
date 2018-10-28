@@ -2,7 +2,6 @@ from enum import Enum
 
 from game.battleship_game import Game
 from game.game_entities import Players
-from game.event_occurances import event_check
 
 
 class GameAction(Enum):
