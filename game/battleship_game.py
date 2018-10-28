@@ -66,7 +66,7 @@ class Game:
         if self.winning_player is not None:
             return self.build_game_won_message()
 
-        board = self.player_one_board if player is Players.PLAYER_ONE else self.player_two_board
+        board = self.player_two_board if player is Players.PLAYER_ONE else self.player_one_board
         type_of_ship_hit: Ships = take_fire(board, position)
         if check_is_winning_board(board):
             self.winning_player = self.current_player
