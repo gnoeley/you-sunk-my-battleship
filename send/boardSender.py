@@ -1,27 +1,32 @@
 
 import requests
 import os
-from unicode.symbols import letter_symbols
+from unicode.symbols import letter_symbols, number_symbols
 
 column_labels = u'\u00a0'.join([
-    letter_symbols.get('A'),
-    letter_symbols.get('B'),
-    letter_symbols.get('C'),
-    letter_symbols.get('D'),
-    letter_symbols.get('E'),
-    letter_symbols.get('F'),
-    letter_symbols.get('G'),
-    letter_symbols.get('H'),
-    letter_symbols.get('I'),
-    letter_symbols.get('J')])
+    number_symbols['0'],
+    number_symbols['1'],
+    number_symbols['2'],
+    number_symbols['3'],
+    number_symbols['4'],
+    number_symbols['5'],
+    number_symbols['6'],
+    number_symbols['7'],
+    number_symbols['8'],
+    number_symbols['9']])
 
 unicodeBoard = \
     column_labels + ' \n' + \
-    '1◽◽◽◽◽◽◽◽\n' + \
-    '2◽◽◽◽◽◽◽◽\n' + \
-    '3◽◽◽◽◽◽◽◽\n' + \
-    '4◽◽◽◽◽◽◽◽\n' + \
-    '5◽◽◽◽◽◽◽◽\n'
+    letter_symbols.get('A') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('B') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('C') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('D') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('E') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('F') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('G') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('H') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('I') + '◽◽◽◽◽◽◽◽\n' + \
+    letter_symbols.get('J') + '◽◽◽◽◽◽◽◽\n'
 
 
 def build_board_xml(aBoard):
