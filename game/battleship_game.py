@@ -28,9 +28,10 @@ class Game:
                  current_player=Players.PLAYER_ONE,
                  player_one_board=None,
                  player_two_board=None,
-                 winning_player=None):
+                 winning_player=None,
+                 hit_taken=None):
         self.session_id = session_id
-        self.message_maker = MessageMaker()
+        self.message_maker = MessageMaker(hit_taken)
         self.current_player = current_player
         self.player_one_board = player_one_board if player_one_board is not None else create_empty_board()
         self.player_two_board = player_two_board if player_two_board is not None else create_empty_board()

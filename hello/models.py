@@ -44,14 +44,14 @@ class GameModel(models.Model):
     def get_player_two_board(self):
         return json.load(self.player_two_board)
 
-
     def toGame(self):
         return Game(
             self.id,
             Players[self.current_player],
             json.loads(self.player_one_board),
             json.loads(self.player_two_board),
-            None if self.winning_player is None else Players[self.winning_player]
+            None if self.winning_player is None else Players[self.winning_player],
+            self.hits_taken
         )
 
     def __str__(self) -> str:
