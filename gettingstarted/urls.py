@@ -6,7 +6,7 @@ admin.autodiscover()
 
 import hello.views
 import hello.ping.ping
-from receive import choose, receiver
+from receive import receiver
 
 # To add a new path, first import the app:
 # import blog
@@ -20,7 +20,6 @@ urlpatterns = [
     path("", hello.views.index, name="index"),
     path("ping", hello.ping.ping.pong, name="pong"),
     path("receive", receiver.receive, name='receive'),
-    path("choose", choose.game, name="choose"),
     path("db/", hello.views.db, name="db"),
     path("admin/", admin.site.urls),
 ]

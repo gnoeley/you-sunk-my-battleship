@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 from hello.models import Dbsession
-from hello.sms.smsSender import sendMessage
+from send.smsSender import sendMessage
 from receive.keywords import Keyword
 
 

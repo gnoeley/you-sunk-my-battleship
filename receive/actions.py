@@ -1,5 +1,5 @@
-from sessions import gamesession
-from sessions.gamesession import Session
+from state import session
+from state.session import Session
 
 
 def invite(message, sent_by):
@@ -11,7 +11,7 @@ def invite(message, sent_by):
     return response
 
 
-def accept(message, session: gamesession.Session, sent_by):
+def accept(message, session: session.Session, sent_by):
     response = session.player_2_accepted_invite()
 
     print(response, message, session)
@@ -19,7 +19,7 @@ def accept(message, session: gamesession.Session, sent_by):
     return response
 
 
-def reject(message, session: gamesession.Session, sent_by):
+def reject(message, session: session.Session, sent_by):
     response = session.player_2_rejected_invite()
 
     print(response)
@@ -27,7 +27,7 @@ def reject(message, session: gamesession.Session, sent_by):
     return response
 
 
-def quit(message, session: gamesession.Session, sent_by):
+def quit(message, session: session.Session, sent_by):
     response = ''
 
     if session.player_1_num == sent_by:
