@@ -50,6 +50,7 @@ def build_xml(content, phone_number='447484292181'):
            '<Message>' + \
            '<Key>' + os.environ.get('CLOCKWORK_API_KEY') + '</Key>' + \
            '<SMS>' + \
+           '<From>'+os.environ.get('FROM_SMS')+'</From>' + \
            '<To>' + phone_number + '</To><MsgType>UCS2</MsgType>' + \
            '<Content>' + content + '</Content>' + \
            '<Concat>3</Concat>' + \
