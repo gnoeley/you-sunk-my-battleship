@@ -9,12 +9,12 @@ import os
 
 # Create your views here.
 def index(request):
-    configVal = os.environ.get('A_CONFIG_VAR')
+    # configVal = os.environ.get('A_CONFIG_VAR')
 
     sendMessage('447484292181', 'This is a test message.')
 
-    return HttpResponse('Hello from Python! =>' + configVal)
-    # return render(request, "index.html")
+    # return HttpResponse('Hello from Python! =>' + configVal)
+    return render(request, "index.html")
 
 def endpoint(request):
     configVal = os.environ.get('A_CONFIG_VAR')
