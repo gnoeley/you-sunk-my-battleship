@@ -5,7 +5,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 import hello.views
-import hello.ping.ping
 from receive import receiver
 
 # To add a new path, first import the app:
@@ -18,9 +17,8 @@ from receive import receiver
 
 urlpatterns = [
     path("", hello.views.index, name="index"),
-    path("ping", hello.ping.ping.pong, name="pong"),
     path("receive", receiver.receive, name='receive'),
     path("db/", hello.views.db, name="db"),
-    path('board-print/', hello.views.board_print, name="board-print" ),
+    # path('board-print/', hello.views.board_print, name="board-print" ),
     path("admin/", admin.site.urls),
 ]

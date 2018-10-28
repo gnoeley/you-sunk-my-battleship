@@ -23,6 +23,6 @@ def receive(request):
 
     print('sessions: ' + s)
 
-    response = process_content(message.content, message.fromNum)
+    response = process_content(message.content.upper(), message.fromNum)
 
     return HttpResponse(response)

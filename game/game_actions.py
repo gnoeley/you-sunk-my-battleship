@@ -31,7 +31,7 @@ def parse_coordinate(s: str) -> (int, int):
     col_chars = s[1:]
 
     row_num = ROW_CHARS.index(row_char)
-    col_num = int(col_chars)-1
+    col_num = int(col_chars)
 
     return col_num, row_num
 

@@ -54,10 +54,9 @@ other_player = {
     ]
 }
 
-
 class MessageMaker:
 
-    def __init__(self):
+    def __init__(self, hits_take=None):
         self.hits_taken = {
             Players.PLAYER_ONE.name: {
                 Ships.CARRIER.name: 0,
@@ -73,7 +72,14 @@ class MessageMaker:
                 Ships.SUBMARINE.name: 0,
                 Ships.DESTROYER.name: 0
             }
-        }
+        } if hits_take is None else hits_take
+
+    @staticmethod
+    def make_turn_status(player, current_player):
+        if player == current_player:
+            return '\nIt\'s your opponent\'s turn.'
+        else:
+            return '\nIt\'s your turn!'
 
     def make_message(self, player, current_player, winning_player, type_of_ship_hit):
         if winning_player is not None:

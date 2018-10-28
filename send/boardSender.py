@@ -1,58 +1,44 @@
-
-import requests
-import os
-from unicode.symbols import letter_symbols, cell_symbols
-
-column_labels = u'\u00a0'.join([
-    letter_symbols.get('A'),
-    letter_symbols.get('B'),
-    letter_symbols.get('C'),
-    letter_symbols.get('D'),
-    letter_symbols.get('E'),
-    letter_symbols.get('F'),
-    letter_symbols.get('G'),
-    letter_symbols.get('H'),
-    letter_symbols.get('I'),
-    letter_symbols.get('J')])
+from game.battleship_game import CellState
+from unicode.symbols import letter_symbols, number_symbols, cell_symbols
 
 
-
-def get_cell_symbol(isHit):
-    if isHit is None:
-        return cell_symbols.get('BLANK')
-    elif isHit:
+def get_cell_symbol(cell_state):
+    if cell_state == CellState.MISS:
+        return cell_symbols.get('MISS')
+    elif cell_state == CellState.HIT:
         return cell_symbols.get('HIT')
     else:
-        return cell_symbols.get('MISS')
+        return cell_symbols.get('BLANK')
 
 
-def encode_row(rownum, hits):
-    row = str(rownum)
-    return row + (''.join(map(get_cell_symbol, hits)))
+def encode_row(cell_states):
+    return ''.join(map(get_cell_symbol, cell_states))
 
 
-unicodeBoard = \
-    column_labels + ' \n' + \
-    encode_row(1, [None, None, True, False, None]) + '\n' + \
-    '2◽◽◽◽◽◽◽◽\n' + \
-    '3◽◽◽◽◽◽◽◽\n' + \
-    '4◽◽◽◽◽◽◽◽\n' + \
-    '5◽◽◽◽◽◽◽◽\n'
-
-def build_board_xml(aBoard):
-    board = unicodeBoard
-    return '<?xml version="1.0" encoding="UTF-8"?>' + \
-           '<Message>' + \
-           '<Key>' + os.environ.get('CLOCKWORK_API_KEY') + '</Key>' + \
-           '<SMS>' + \
-           '<To>447528830422</To><MsgType>UCS2</MsgType>' + \
-           '<Content>' + board + '</Content>' + \
-           '</SMS>' + \
-           '</Message>'
+column_labels = ''.join([
+    '   ',
+    number_symbols['0'],
+    number_symbols['1'],
+    number_symbols['2'],
+    number_symbols['3'],
+    number_symbols['4'],
+    number_symbols['5'],
+    number_symbols['6'],
+    number_symbols['7'],
+    number_symbols['8'],
+    number_symbols['9']])
 
 
-def send_board_xml(board):
-    xml = build_board_xml(board)
-    headers = {'Content-Type': 'text/xml'} # set what your server accepts
-    print(requests.post('https://api.clockworksms.com/xml/send.aspx', data=xml.encode('utf-8'), headers=headers).text)
-    return xml
+def encode_board(board, fromRow, toRow):
+    if fromRow < 5:
+        result = column_labels + '\n'
+    else:
+        result = ''
+
+    for i in range(fromRow, toRow):
+        result += letter_symbols[i] + encode_row(board[i]) + '\n'
+
+    if fromRow >= 5:
+        result += column_labels + '\n'
+
+    return result

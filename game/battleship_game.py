@@ -1,15 +1,26 @@
+from enum import Enum
+
 from game.game_entities import Players, available_ships, Ships
 from game.messages import MessageMaker
 from game.event_occurances import event_check
 import random
 
+
+class CellState(Enum):
+    MISS = 'm'
+    EMPTY = 'e'
+    HIT = 'h'
+
+
 # Orientation
+
+
 VERTICAL = 0
 HORIZONTAL = 1
 
 
 def create_empty_board():
-    return [['e' for i in range(10)] for i in range(10)]
+    return [[CellState.EMPTY.value for i in range(10)] for i in range(10)]
 
 
 class Game:
@@ -18,9 +29,10 @@ class Game:
                  current_player=Players.PLAYER_ONE,
                  player_one_board=None,
                  player_two_board=None,
-                 winning_player=None):
+                 winning_player=None,
+                 hit_taken=None):
         self.session_id = session_id
-        self.message_maker = MessageMaker()
+        self.message_maker = MessageMaker(hit_taken)
         self.current_player = current_player
         self.player_one_board = player_one_board if player_one_board is not None else create_empty_board()
         self.player_two_board = player_two_board if player_two_board is not None else create_empty_board()
@@ -43,7 +55,9 @@ class Game:
         return {
             self.winning_player: 'You have already won! Send another INVITE to start a new game',
             other_player(self.winning_player): 'You have already lost! Send another INVITE to restore your honour',
-            'GAME_OVER': False
+            'GAME_OVER': False,
+            'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+            'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
         }
 
     def get_player_instructions(self):
@@ -51,9 +65,11 @@ class Game:
             return self.build_game_won_message()
         else:
             return {
-                self.current_player: 'You\'re in a game it\'s your turn',
-                other_player(self.current_player): 'You\'re in a game it\'s another players turn',
-                'GAME_OVER': False
+                self.current_player: 'You\'re in a game it\'s your turn. Text \'FIRE\' followed by your coordinates to attack.',
+                other_player(self.current_player): 'You\'re in a game it\'s another players turn. Text \'FIRE\' followed by your coordinates to attack once the other player has been.',
+                'GAME_OVER': False,
+                'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+                'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
             }
 
     def player_turn(self, player: Players, position):
@@ -61,7 +77,9 @@ class Game:
             return {
                 player: 'It is not your turn, patience!',
                 self.current_player: 'The other player is getting restless, please hurry up',
-                'GAME_OVER': False
+                'GAME_OVER': False,
+                'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+                'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
             }
 
         if self.winning_player is not None:
@@ -104,8 +122,27 @@ class Game:
                                                                     self.current_player,
                                                                     self.winning_player,
                                                                     type_of_ship_hit),
-                'GAME_OVER': self.winning_player is not None
+                'GAME_OVER': self.winning_player is not None,
+                'PLAYER_1_BOARD': self.typed_player_board(self.player_one_board),
+                'PLAYER_2_BOARD': self.typed_player_board(self.player_two_board),
             }
+
+    def position_to_cell_state(self, position):
+        if position == CellState.EMPTY.value:
+            return CellState.EMPTY
+        if position == CellState.HIT.value:
+            return CellState.HIT
+        if position == CellState.MISS.value:
+            return CellState.MISS
+
+    def typed_player_board(self, board):
+        rows = []
+        for row in board:
+            cells = []
+            for position in row:
+                cells.append(self.position_to_cell_state(position))
+            rows.append(cells)
+        return rows
 
 
 def random_orientation():
@@ -162,9 +199,9 @@ def take_fire(board, position):
 
     type_of_ship_hit = is_ship_position(board[y][x])
     if type_of_ship_hit:
-        board[y][x] = 'h'
-    elif board[y][x] is 'e':
-        board[y][x] = 'm'
+        board[y][x] = CellState.HIT.value
+    elif board[y][x] is CellState.EMPTY.value:
+        board[y][x] = CellState.MISS.value
 
     return type_of_ship_hit
 
