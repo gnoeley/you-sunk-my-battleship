@@ -1,4 +1,4 @@
-from state.session import Session
+from state.session import Session, SessionState
 from .actions import invite, accept, reject, quit
 from .keywords import Keyword
 
@@ -20,8 +20,8 @@ def process_content(message, sent_by):
         if dbSession is None:
             return invite(remainder, sent_by)
         else:
-            session = session.Session(dbSession=dbSession)
-            if session.session_state == session.SessionState.ENDED:
+            session = Session(dbSession=dbSession)
+            if session.session_state == SessionState.ENDED:
                 return session.restart(player_restarting=sent_by)
             else:
                 return 'invite already in a session'  # TODO: stuff and things
@@ -29,7 +29,7 @@ def process_content(message, sent_by):
     if dbSession is None:
         return 'no session found' + Session.sessions_str()
 
-    session = session.Session(dbSession=dbSession)
+    session = Session(dbSession=dbSession)
 
     if Keyword.has_value(first_word):
 

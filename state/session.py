@@ -22,7 +22,7 @@ class PlayerState(Enum):
 
 class Session:
 
-    def __init__(self, player_1_num='a', player_2_num='b', dbSession: Dbsession = None) -> object:
+    def __init__(self, player_1_num='a', player_2_num='b', dbSession: Dbsession = None):
         if dbSession is None:
             self.id = None
             self.player_1_num = player_1_num
