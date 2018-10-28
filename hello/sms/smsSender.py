@@ -7,8 +7,9 @@ def sendMessage(to, text):
     if os.environ.get('SEND_SMS') != 'True':
         print('Would have sent "' + text + '" to ' + to)
     else:
-
-        message = clockwork.SMS(to=to, message=text, from_name=os.environ.get('FROM_SMS'))
+        from_name = os.environ.get('FROM_SMS')
+        print('Sending "' + text + '" to ' + to + " from " + from_name)
+        message = clockwork.SMS(to=to, message=text, from_name=from_name)
 
         response = api.send(message)
 
