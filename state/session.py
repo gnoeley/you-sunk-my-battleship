@@ -2,7 +2,7 @@ from enum import Enum, auto
 
 from game.battleship_game import Game, Players
 from hello.models import Dbsession, GameModel
-from send.smsSender import sendMessage
+from send.smsSender import send_message, send_message_with_board
 from receive.keywords import Keyword
 from game.game_actions import process_action
 
@@ -93,8 +93,8 @@ class Session:
         p1Message = self.player_2_num + ' has been invited'
         p2Message = self.player_1_num + ' has invited you to a game of Battleships - text ' + Keyword.ACCEPT.value + ' to join the game or ' + Keyword.QUIT.value + ' to refuse'
 
-        sendMessage(to=self.player_1_num, text=p1Message)
-        sendMessage(to=self.player_2_num, text=p2Message)
+        send_message(to=self.player_1_num, text=p1Message)
+        send_message(to=self.player_2_num, text=p2Message)
 
         self.player_2_state = PlayerState.INVITED
 
@@ -107,8 +107,8 @@ class Session:
         p1Message = self.player_2_num + ' has accepted your invite.' + ' reply ' + Keyword.QUIT.value + ' to quit'
         p2Message = 'You are now in a game with: ' + self.player_1_num + ' reply ' + Keyword.QUIT.value + ' to quit'
 
-        sendMessage(to=self.player_1_num, text=p1Message)
-        sendMessage(to=self.player_2_num, text=p2Message)
+        send_message(to=self.player_1_num, text=p1Message)
+        send_message(to=self.player_2_num, text=p2Message)
 
         self.player_1_state = PlayerState.IN_GAME
         self.player_2_state = PlayerState.IN_GAME
@@ -121,8 +121,8 @@ class Session:
         p1Message = self.player_2_num + ' has rejected your invite.' + ' reply ' + Keyword.INVITE.value + ' with a number to invite someone else'
         p2Message = 'Why so serious?'
 
-        sendMessage(to=self.player_1_num, text=p1Message)
-        sendMessage(to=self.player_2_num, text=p2Message)
+        send_message(to=self.player_1_num, text=p1Message)
+        send_message(to=self.player_2_num, text=p2Message)
 
         self.player_2_state = PlayerState.REJECTED
         self.session_state = SessionState.ENDED
@@ -134,8 +134,8 @@ class Session:
         p1Message = 'Bye'
         p2Message = 'Player 1 left'
 
-        sendMessage(to=self.player_1_num, text=p1Message)
-        sendMessage(to=self.player_2_num, text=p2Message)
+        send_message(to=self.player_1_num, text=p1Message)
+        send_message(to=self.player_2_num, text=p2Message)
 
         self.player_1_state = PlayerState.QUIT
         self.session_state = SessionState.ENDED
@@ -147,8 +147,8 @@ class Session:
         p1Message = 'Player 2 left'
         p2Message = 'Bye'
 
-        sendMessage(to=self.player_1_num, text=p1Message)
-        sendMessage(to=self.player_2_num, text=p2Message)
+        send_message(to=self.player_1_num, text=p1Message)
+        send_message(to=self.player_2_num, text=p2Message)
 
         self.player_2_state = PlayerState.QUIT
         self.session_state = SessionState.ENDED
@@ -175,8 +175,9 @@ class Session:
 
         p1Message = game_model[Players.PLAYER_ONE]
         p2Message = game_model[Players.PLAYER_TWO]
-        sendMessage(to=self.player_1_num, text=p1Message)
-        sendMessage(to=self.player_2_num, text=p2Message)
+
+        send_message_with_board(to=self.player_1_num, text=p1Message, board=game_model['PLAYER_2_BOARD'])
+        send_message_with_board(to=self.player_2_num, text=p2Message, board=game_model['PLAYER_1_BOARD'])
 
         # Persist GameModel
         game_model = GameModel.toModel(game)
@@ -186,7 +187,7 @@ class Session:
         return 'processing game action ' + first_word + ' from ' + sent_by + ' [' + remainder + ']'
 
     def find_game_for_session(self):
-        try:
+        try:\
             game = GameModel.objects.get(id=self.game_id).toGame()
         except GameModel.DoesNotExist:
             game = None

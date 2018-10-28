@@ -1,20 +1,18 @@
-
-import requests
-import os
+from game.battleship_game import CellState
 from unicode.symbols import letter_symbols, number_symbols, cell_symbols
 
 
-def get_cell_symbol(isHit):
-    if isHit is None:
+def get_cell_symbol(cell_state):
+    if cell_state == CellState.EMPTY:
         return cell_symbols.get('BLANK')
-    elif isHit:
+    elif cell_state == CellState.HIT:
         return cell_symbols.get('HIT')
     else:
         return cell_symbols.get('MISS')
 
 
-def encode_row(hits):
-    return ''.join(map(get_cell_symbol, hits))
+def encode_row(cell_states):
+    return ''.join(map(get_cell_symbol, cell_states))
 
 
 column_labels = ''.join([
@@ -31,33 +29,8 @@ column_labels = ''.join([
     number_symbols['9']])
 
 
-unicodeBoard = \
-    column_labels + ' \n' + \
-    letter_symbols.get('A') + encode_row([None, None, None, None,None,None,None,None,None, None]) + '\n' + \
-    letter_symbols.get('B') + encode_row([True, True, True, True,True,True,True,True,True, True]) + '\n' + \
-    letter_symbols.get('C') + encode_row([False, False, False, False,False,False,False,False,False, False]) + '\n' + \
-    letter_symbols.get('D') + '◽◽◽◽◽◽◽◽\n' + \
-    letter_symbols.get('E') + '◽◽◽◽◽◽◽◽\n' + \
-    letter_symbols.get('F') + '◽◽◽◽◽◽◽◽\n' + \
-    letter_symbols.get('G') + '◽◽◽◽◽◽◽◽\n' + \
-    letter_symbols.get('H') + '◽◽◽◽◽◽◽◽\n' + \
-    letter_symbols.get('I') + '◽◽◽◽◽◽◽◽\n' + \
-    letter_symbols.get('J') + '◽◽◽◽◽◽◽◽\n'
-
-def build_board_xml(aBoard):
-    board = unicodeBoard
-    return '<?xml version="1.0" encoding="UTF-8"?>' + \
-           '<Message>' + \
-           '<Key>' + os.environ.get('CLOCKWORK_API_KEY') + '</Key>' + \
-           '<SMS>' + \
-           '<To>447528830422</To><MsgType>UCS2</MsgType>' + \
-           '<Content>' + board + '</Content>' + \
-           '</SMS>' + \
-           '</Message>'
-
-
-def send_board_xml(board):
-    xml = build_board_xml(board)
-    headers = {'Content-Type': 'text/xml'} # set what your server accepts
-    print(requests.post('https://api.clockworksms.com/xml/send.aspx', data=xml.encode('utf-8'), headers=headers).text)
-    return xml
+def encode_board(board):
+    result = column_labels + '\n'
+    for i, row in enumerate(board):
+        result += letter_symbols[i] + encode_row(row) + '\n'
+    return result
